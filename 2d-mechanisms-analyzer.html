@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SiliconWit.COM 2D Mechanisms Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 100vw;
+            margin: 0;
+            padding: 10px;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 280px 1fr 300px;
+            gap: 10px;
+            height: calc(100vh - 120px);
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .mechanism-selector {
+            margin-bottom: 20px;
+        }
+
+        .mechanism-selector h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .mechanism-dropdown {
+            width: 100%;
+            padding: 8px 10px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            font-size: 0.9em;
+            background: white;
+            cursor: pointer;
+        }
+
+        .experiment-panel {
+            margin-top: 15px;
+        }
+
+        .experiment-panel h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .experiment-button {
+            width: 100%;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            text-align: left;
+        }
+
+        .experiment-button:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .experiment-button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .workspace {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mechanism-canvas {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-image: 
+                linear-gradient(rgba(102, 126, 234, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 126, 234, 0.1) 1px, transparent 1px),
+                linear-gradient(rgba(102, 126, 234, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 126, 234, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
+            background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+            margin-bottom: 15px;
+        }
+
+        .controls-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .control-group {
+            background: #f8f9ff;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #e0e6ff;
+        }
+
+        .control-group h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 8px;
+        }
+
+        .control-row label {
+            flex: 1;
+            font-size: 0.85em;
+            color: #555;
+        }
+
+        .control-row input {
+            flex: 1;
+            padding: 4px 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        .control-row span {
+            min-width: 40px;
+            font-size: 0.85em;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .results-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .results-section {
+            background: #f8f9ff;
+            border-radius: 6px;
+            padding: 0;
+            margin-bottom: 15px;
+            border: 1px solid #e0e6ff;
+            display: none;
+        }
+
+        .results-header {
+            padding: 12px 15px;
+            background: #667eea;
+            color: white;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .results-header:hover {
+            background: #5a6fd8;
+        }
+
+        .results-header h4 {
+            margin: 0;
+            font-size: 1em;
+        }
+
+        .toggle-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .results-content {
+            padding: 15px;
+            display: block;
+        }
+
+        .results-content.collapsed {
+            display: none;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 0.8em;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 6px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .data-table th {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 200px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            background-image: 
+                linear-gradient(rgba(102, 126, 234, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 126, 234, 0.15) 1px, transparent 1px),
+                linear-gradient(rgba(102, 126, 234, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 126, 234, 0.05) 1px, transparent 1px);
+            background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
+            background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+        }
+
+        .download-section {
+            background: #f0f8ff;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+
+        .download-section h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .download-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .download-item .icon {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .download-item .title {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.8em;
+            margin-bottom: 3px;
+        }
+
+        .download-item .desc {
+            font-size: 0.7em;
+            color: #666;
+        }
+
+        .info-panel {
+            background: rgba(255, 248, 230, 0.8);
+            border-left: 4px solid #ffa500;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .info-panel h4 {
+            color: #e67e00;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .info-panel ul {
+            margin-left: 15px;
+        }
+
+        .info-panel li {
+            margin-bottom: 3px;
+            font-size: 0.85em;
+        }
+
+        .info-panel .read-more-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .info-panel .read-more-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 260px 1fr 280px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                height: auto;
+                gap: 8px;
+            }
+            
+            .controls-section {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .mechanism-canvas {
+                height: 280px;
+            }
+            
+            .action-buttons {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 5px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .mechanism-canvas {
+                height: 250px;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SiliconWit.COM 2D Mechanisms Analyzer</h1>
+            <p class="subtitle">Planar Mechanics Experimentation Tool for Mechatronics Engineering Students</p>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="mechanism-selector">
+                    <h3>Select Mechanism</h3>
+                    <select class="mechanism-dropdown" id="mechanism-selector">
+                        <option value="fourbar">Four-Bar Linkage</option>
+                        <option value="slidercrank">Slider-Crank Mechanism</option>
+                        <option value="scottishyoke">Scotch Yoke Mechanism</option>
+                        <option value="toggleclamp">Toggle Clamp Mechanism</option>
+                    </select>
+                </div>
+
+                <div class="experiment-panel">
+                    <h4>Available Experiments</h4>
+                    <div id="experiment-list">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="workspace">
+                <div id="mechanism-info" class="info-panel">
+                    <!-- Dynamically populated -->
+                </div>
+
+                <canvas id="mechanism-canvas" class="mechanism-canvas" width="800" height="400"></canvas>
+
+                <div class="results-section" id="results-section">
+                    <div class="results-header" onclick="toggleResults()">
+                        <h4>Experiment Results</h4>
+                        <span class="toggle-icon" id="results-toggle">▼</span>
+                    </div>
+                    <div class="results-content" id="results-content-wrapper">
+                        <div id="results-content">
+                            <!-- Dynamically populated -->
+                        </div>
+                        <canvas id="chart-canvas" class="chart-container" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <div class="controls-section">
+                    <div class="control-group">
+                        <h4>Mechanism Parameters</h4>
+                        <div id="mechanism-controls">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h4>Animation Controls</h4>
+                        <div class="control-row">
+                            <label>Speed (RPM):</label>
+                            <input type="range" id="speed-control" min="1" max="120" value="30">
+                            <span id="speed-value">30</span>
+                        </div>
+                        <div class="control-row">
+                            <label>Step Angle (°):</label>
+                            <input type="range" id="step-control" min="1" max="30" value="5">
+                            <span id="step-value">5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn btn-primary" id="start-btn">▶️ Start</button>
+                    <button class="action-btn btn-secondary" id="stop-btn">⏸️ Stop</button>
+                    <button class="action-btn btn-primary" id="experiment-btn">🧪 Run Experiment</button>
+                    <button class="action-btn btn-success" id="data-btn">📊 Generate Data</button>
+                </div>
+            </div>
+
+            <div class="results-panel">
+                <div class="download-section">
+                    <h4>Download Resources</h4>
+                    <div class="download-grid">
+                        <div class="download-item" id="cad-download">
+                            <div class="icon">🏗️</div>
+                            <div class="title">FreeCAD Python</div>
+                            <div class="desc">Complete model code</div>
+                        </div>
+                        <div class="download-item" id="data-download">
+                            <div class="icon">📊</div>
+                            <div class="title">Experimental Data</div>
+                            <div class="desc">CSV with all measurements</div>
+                        </div>
+                        <div class="download-item" id="report-download">
+                            <div class="icon">📋</div>
+                            <div class="title">Lab Report Template</div>
+                            <div class="desc">Professional template</div>
+                        </div>
+                        <div class="download-item" id="design-download">
+                            <div class="icon">📐</div>
+                            <div class="title">Design Data</div>
+                            <div class="desc">Manufacturing specs</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentMechanism = 'fourbar';
+        let currentExperiment = null;
+        let animationId = null;
+        let angle = 0;
+        let experimentData = [];
+        let ctx = null;
+        let isAnimating = false;
+
+        // Mechanism configurations
+        const mechanisms = {
+            fourbar: {
+                name: "Four-Bar Linkage",
+                description: "Fundamental closed-loop mechanism for complex motion generation",
+                experiments: [
+                    { id: 'motion-path', name: 'Coupler Curve Analysis', desc: 'Trace and analyze coupler point trajectories' },
+                    { id: 'velocity-analysis', name: 'Velocity Analysis', desc: 'Study velocity ratios and transmission angles' },
+                    { id: 'force-analysis', name: 'Force Transmission', desc: 'Analyze force transmission characteristics' },
+                    { id: 'grashof-analysis', name: 'Grashof Classification', desc: 'Determine mechanism type using Grashof criterion' }
+                ],
+                parameters: {
+                    link1: { name: 'Ground Link (mm)', value: 100, min: 50, max: 200 },
+                    link2: { name: 'Input Link (mm)', value: 40, min: 20, max: 100 },
+                    link3: { name: 'Coupler Link (mm)', value: 120, min: 60, max: 250 },
+                    link4: { name: 'Output Link (mm)', value: 80, min: 40, max: 150 }
+                },
+                info: [
+                    "Four-bar linkages are fundamental mechanisms in mechanical engineering",
+                    "Can generate complex motion paths with simple rotary input",
+                    "Grashof's law determines the type of motion possible",
+                    "Applications: windshield wipers, walking beam pumps, suspension systems",
+                    "Read more: <a href='https://siliconwit.com/education/planar-mechanics/' target='_blank' class='read-more-link'>siliconwit.com/education/planar-mechanics/</a> | Edit/contribute: <a href='https://github.com/SiliconWit/2d-mechanisms-analyzer' target='_blank' class='read-more-link'>GitHub</a>"
+                ]
+            },
+            slidercrank: {
+                name: "Slider-Crank Mechanism",
+                description: "Converts rotational motion to linear motion with high efficiency",
+                experiments: [
+                    { id: 'displacement', name: 'Displacement Analysis', desc: 'Study piston displacement vs crank angle' },
+                    { id: 'velocity-profile', name: 'Velocity Profile', desc: 'Analyze velocity characteristics' },
+                    { id: 'acceleration', name: 'Acceleration Analysis', desc: 'Study acceleration patterns and forces' },
+                    { id: 'mechanical-advantage', name: 'Mechanical Advantage', desc: 'Analyze force transmission efficiency' }
+                ],
+                parameters: {
+                    crank: { name: 'Crank Length (mm)', value: 50, min: 25, max: 100 },
+                    rod: { name: 'Connecting Rod (mm)', value: 150, min: 100, max: 300 },
+                    offset: { name: 'Offset (mm)', value: 0, min: -50, max: 50 }
+                },
+                info: [
+                    "Essential mechanism for engines, pumps, and compressors",
+                    "Converts rotary motion to precise linear reciprocating motion",
+                    "Connecting rod length affects motion smoothness",
+                    "Applications: IC engines, reciprocating compressors, hand pumps",
+                    "Read more: <a href='https://siliconwit.com/education/planar-mechanics/' target='_blank' class='read-more-link'>siliconwit.com/education/planar-mechanics/</a> | Edit/contribute: <a href='https://github.com/SiliconWit/2d-mechanisms-analyzer' target='_blank' class='read-more-link'>GitHub</a>"
+                ]
+            },
+            scottishyoke: {
+                name: "Scotch Yoke Mechanism",
+                description: "Converts rotary motion to perfect harmonic linear motion",
+                experiments: [
+                    { id: 'harmonic-motion', name: 'Harmonic Motion Analysis', desc: 'Study perfect sinusoidal motion' },
+                    { id: 'force-analysis', name: 'Force Analysis', desc: 'Analyze forces and no side forces' },
+                    { id: 'comparison', name: 'Comparison with Slider-Crank', desc: 'Compare motion characteristics' }
+                ],
+                parameters: {
+                    radius: { name: 'Crank Radius (mm)', value: 50, min: 25, max: 100 },
+                    yoke_width: { name: 'Yoke Width (mm)', value: 20, min: 10, max: 40 }
+                },
+                info: [
+                    "Produces perfect simple harmonic motion",
+                    "No side forces on the slider unlike slider-crank",
+                    "Smooth operation but higher wear at pin-slot interface",
+                    "Applications: band saws, vibration testing, control valves",
+                    "Read more: <a href='https://siliconwit.com/education/planar-mechanics/' target='_blank' class='read-more-link'>siliconwit.com/education/planar-mechanics/</a> | Edit/contribute: <a href='https://github.com/SiliconWit/2d-mechanisms-analyzer' target='_blank' class='read-more-link'>GitHub</a>"
+                ]
+            },
+            toggleclamp: {
+                name: "Toggle Clamp Mechanism",
+                description: "Provides high force amplification with over-center locking",
+                experiments: [
+                    { id: 'force-amplification', name: 'Force Amplification', desc: 'Study mechanical advantage variation' },
+                    { id: 'toggle-action', name: 'Toggle Action Analysis', desc: 'Analyze over-center locking' },
+                    { id: 'clamp-force', name: 'Clamping Force', desc: 'Study output force characteristics' }
+                ],
+                parameters: {
+                    link1: { name: 'Handle Link (mm)', value: 80, min: 40, max: 120 },
+                    link2: { name: 'Middle Link (mm)', value: 60, min: 30, max: 100 },
+                    link3: { name: 'Clamp Link (mm)', value: 40, min: 20, max: 80 }
+                },
+                info: [
+                    "Provides enormous mechanical advantage near toggle position",
+                    "Self-locking capability with over-center action",
+                    "Quick-acting operation with positive engagement",
+                    "Applications: toggle clamps, vice grips, mechanical presses",
+                    "Read more: <a href='https://siliconwit.com/education/planar-mechanics/' target='_blank' class='read-more-link'>siliconwit.com/education/planar-mechanics/</a> | Edit/contribute: <a href='https://github.com/SiliconWit/2d-mechanisms-analyzer' target='_blank' class='read-more-link'>GitHub</a>"
+                ]
+            }
+        };
+
+        // Initialize application
+        function init() {
+            console.log('Initializing application...');
+            
+            const canvas = document.getElementById('mechanism-canvas');
+            if (!canvas) {
+                console.error('Canvas not found!');
+                return;
+            }
+            
+            ctx = canvas.getContext('2d');
+            if (!ctx) {
+                console.error('Could not get canvas context!');
+                return;
+            }
+
+            setupEventListeners();
+            loadMechanism('fourbar');
+            updateSpeedDisplay();
+            updateStepDisplay();
+            
+            console.log('Application initialized successfully');
+        }
+
+        function setupEventListeners() {
+            // Mechanism selection
+            const mechanismSelector = document.getElementById('mechanism-selector');
+            if (mechanismSelector) {
+                mechanismSelector.addEventListener('change', function(e) {
+                    loadMechanism(e.target.value);
+                });
+            }
+
+            // Speed and step controls
+            const speedControl = document.getElementById('speed-control');
+            const stepControl = document.getElementById('step-control');
+            
+            if (speedControl) {
+                speedControl.addEventListener('input', updateSpeedDisplay);
+            }
+            if (stepControl) {
+                stepControl.addEventListener('input', updateStepDisplay);
+            }
+
+            // Action buttons
+            const startBtn = document.getElementById('start-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const experimentBtn = document.getElementById('experiment-btn');
+            const dataBtn = document.getElementById('data-btn');
+
+            if (startBtn) {
+                startBtn.addEventListener('click', startAnimation);
+            }
+            if (stopBtn) {
+                stopBtn.addEventListener('click', stopAnimation);
+            }
+            if (experimentBtn) {
+                experimentBtn.addEventListener('click', runExperiment);
+            }
+            if (dataBtn) {
+                dataBtn.addEventListener('click', generateData);
+            }
+
+            // Download buttons
+            const cadDownload = document.getElementById('cad-download');
+            const dataDownload = document.getElementById('data-download');
+            const reportDownload = document.getElementById('report-download');
+            const designDownload = document.getElementById('design-download');
+
+            if (cadDownload) {
+                cadDownload.addEventListener('click', downloadCAD);
+            }
+            if (dataDownload) {
+                dataDownload.addEventListener('click', downloadData);
+            }
+            if (reportDownload) {
+                reportDownload.addEventListener('click', downloadReport);
+            }
+            if (designDownload) {
+                designDownload.addEventListener('click', downloadDesignData);
+            }
+        }
+
+        function updateSpeedDisplay() {
+            const speedControl = document.getElementById('speed-control');
+            const speedValue = document.getElementById('speed-value');
+            if (speedControl && speedValue) {
+                speedValue.textContent = speedControl.value;
+            }
+        }
+
+        function updateStepDisplay() {
+            const stepControl = document.getElementById('step-control');
+            const stepValue = document.getElementById('step-value');
+            if (stepControl && stepValue) {
+                stepValue.textContent = stepControl.value;
+            }
+        }
+
+        function loadMechanism(mechanismId) {
+            currentMechanism = mechanismId;
+            const mechanism = mechanisms[mechanismId];
+            
+            if (!mechanism) {
+                console.error('Mechanism not found:', mechanismId);
+                return;
+            }
+
+            // Update info panel
+            updateInfoPanel(mechanism);
+            
+            // Update experiment list
+            updateExperimentList(mechanism.experiments);
+            
+            // Update controls
+            updateMechanismControls(mechanism.parameters);
+            
+            // Reset angle and redraw
+            angle = 0;
+            drawMechanism();
+        }
+
+        function updateInfoPanel(mechanism) {
+            const infoPanel = document.getElementById('mechanism-info');
+            if (infoPanel) {
+                infoPanel.innerHTML = `
+                    <h4>${mechanism.name}</h4>
+                    <p style="margin-bottom: 8px; font-weight: 600; color: #555;">${mechanism.description}</p>
+                    <ul>
+                        ${mechanism.info.map(info => `<li>${info}</li>`).join('')}
+                    </ul>
+                `;
+            }
+        }
+
+        function updateExperimentList(experiments) {
+            const experimentList = document.getElementById('experiment-list');
+            if (experimentList) {
+                experimentList.innerHTML = experiments.map(exp => `
+                    <button class="experiment-button" data-experiment="${exp.id}" title="${exp.desc}">
+                        ${exp.name}
+                    </button>
+                `).join('');
+
+                // Add event listeners to experiment buttons
+                experimentList.querySelectorAll('.experiment-button').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        experimentList.querySelectorAll('.experiment-button').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        currentExperiment = btn.dataset.experiment;
+                    });
+                });
+            }
+        }
+
+        function updateMechanismControls(parameters) {
+            const controlsDiv = document.getElementById('mechanism-controls');
+            if (controlsDiv) {
+                controlsDiv.innerHTML = Object.entries(parameters).map(([key, param]) => `
+                    <div class="control-row">
+                        <label>${param.name}:</label>
+                        <input type="range" id="${key}-control" min="${param.min}" max="${param.max}" value="${param.value}">
+                        <span id="${key}-value">${param.value}</span>
+                    </div>
+                `).join('');
+
+                // Add event listeners to parameter controls
+                Object.keys(parameters).forEach(key => {
+                    const control = document.getElementById(`${key}-control`);
+                    const valueSpan = document.getElementById(`${key}-value`);
+                    
+                    if (control && valueSpan) {
+                        control.addEventListener('input', function() {
+                            const value = parseFloat(this.value);
+                            valueSpan.textContent = value;
+                            mechanisms[currentMechanism].parameters[key].value = value;
+                            drawMechanism();
+                        });
+                    }
+                });
+            }
+        }
+
+        function drawMechanism() {
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, 800, 400);
+            
+            // Set up coordinate system
+            ctx.save();
+            ctx.translate(400, 200);
+            ctx.scale(1, -1);
+
+            switch(currentMechanism) {
+                case 'fourbar':
+                    drawFourBarLinkage();
+                    break;
+                case 'slidercrank':
+                    drawSliderCrank();
+                    break;
+                case 'scottishyoke':
+                    drawScotchYoke();
+                    break;
+                case 'toggleclamp':
+                    drawToggleClamp();
+                    break;
+            }
+
+            ctx.restore();
+        }
+
+        function drawFourBarLinkage() {
+            const params = mechanisms.fourbar.parameters;
+            const L1 = params.link1.value;
+            const L2 = params.link2.value;
+            const L3 = params.link3.value;
+            const L4 = params.link4.value;
+
+            // Calculate positions
+            const A = [-L1/2, 0];
+            const B = [L1/2, 0];
+            const C = [A[0] + L2 * Math.cos(angle), A[1] + L2 * Math.sin(angle)];
+            
+            // Solve for point D using intersection of circles
+            const dx = B[0] - C[0];
+            const dy = B[1] - C[1];
+            const d = Math.sqrt(dx*dx + dy*dy);
+            
+            if (d > L3 + L4 || d < Math.abs(L3 - L4)) {
+                drawText("Invalid linkage configuration", 0, 0);
+                return;
+            }
+            
+            const a = (L4*L4 - L3*L3 + d*d) / (2*d);
+            const h = Math.sqrt(L4*L4 - a*a);
+            const px = C[0] + a * dx / d;
+            const py = C[1] + a * dy / d;
+            const D = [px + h * (-dy) / d, py + h * dx / d];
+
+            // Draw ground link
+            drawGroundLink(A, B);
+
+            // Draw links
+            drawLink(A, C, '#FF6B6B', 4);
+            drawLink(C, D, '#4ECDC4', 4);
+            drawLink(D, B, '#45B7D1', 4);
+
+            // Draw joints
+            drawJoint(A[0], A[1], '#333', true);
+            drawJoint(B[0], B[1], '#333', true);
+            drawJoint(C[0], C[1], '#FF6B6B');
+            drawJoint(D[0], D[1], '#45B7D1');
+
+            // Draw coupler curve if experiment is active
+            if (currentExperiment === 'motion-path') {
+                drawCouplerCurve(A, B, L1, L2, L3, L4);
+            }
+
+            // Add labels
+            drawLabel("A", A[0], A[1], -15, -15);
+            drawLabel("B", B[0], B[1], 15, -15);
+            drawLabel("C", C[0], C[1], 15, 15);
+            drawLabel("D", D[0], D[1], -15, 15);
+        }
+
+        function drawSliderCrank() {
+            const params = mechanisms.slidercrank.parameters;
+            const r = params.crank.value;
+            const l = params.rod.value;
+            const offset = params.offset.value;
+
+            // Calculate positions
+            const A = [0, 0];
+            const B = [r * Math.cos(angle), r * Math.sin(angle)];
+            const x = r * Math.cos(angle) + Math.sqrt(l*l - (r * Math.sin(angle) - offset)*(r * Math.sin(angle) - offset));
+            const C = [x, offset];
+
+            // Draw crank
+            drawLink(A, B, '#FF6B6B', 4);
+
+            // Draw connecting rod
+            drawLink(B, C, '#4ECDC4', 4);
+
+            // Draw slider track
+            drawSliderTrack(offset);
+
+            // Draw slider
+            ctx.fillStyle = '#45B7D1';
+            ctx.fillRect(C[0] - 15, C[1] - 10, 30, 20);
+
+            // Draw joints
+            drawJoint(A[0], A[1], '#333', true);
+            drawJoint(B[0], B[1], '#FF6B6B');
+
+            // Add labels
+            drawLabel("A", A[0], A[1], -15, -15);
+            drawLabel("B", B[0], B[1], 15, 15);
+            drawLabel("C", C[0], C[1], 15, -25);
+        }
+
+        function drawScotchYoke() {
+            const params = mechanisms.scottishyoke.parameters;
+            const r = params.radius.value;
+            const yoke_width = params.yoke_width.value;
+
+            // Calculate positions
+            const pinX = r * Math.cos(angle);
+            const pinY = r * Math.sin(angle);
+            const yokeX = pinX;
+
+            // Draw crank circle
+            ctx.strokeStyle = '#FF6B6B';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(0, 0, r, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Draw crank arm
+            drawLink([0, 0], [pinX, pinY], '#FF6B6B', 4);
+
+            // Draw yoke
+            ctx.strokeStyle = '#4ECDC4';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(yokeX, -100);
+            ctx.lineTo(yokeX, 100);
+            ctx.stroke();
+
+            // Draw yoke body
+            ctx.fillStyle = '#4ECDC4';
+            ctx.fillRect(yokeX - yoke_width/2, -yoke_width/2, yoke_width, yoke_width);
+
+            // Draw slider track
+            drawSliderTrack(0, true);
+
+            // Draw pin
+            drawJoint(pinX, pinY, '#FF6B6B');
+            drawJoint(0, 0, '#333', true);
+
+            // Add labels
+            drawLabel("Pin", pinX, pinY, 15, 15);
+            drawLabel("Yoke", yokeX, -yoke_width/2 - 10, 0, -10);
+        }
+
+        function drawToggleClamp() {
+            const params = mechanisms.toggleclamp.parameters;
+            const L1 = params.link1.value;
+            const L2 = params.link2.value;
+            const L3 = params.link3.value;
+
+            // Calculate positions for toggle mechanism
+            const A = [-L1/2, -20]; // Fixed pivot
+            const B = [A[0] + L1 * Math.cos(angle), A[1] + L1 * Math.sin(angle)]; // Handle end
+            
+            // Calculate middle joint C (simplified)
+            const targetX = 50;
+            const targetY = -40;
+            const C = [B[0] + L2 * 0.8, B[1] - L2 * 0.3];
+            const D = [targetX, targetY];
+
+            // Draw base
+            drawGroundSymbol(A[0], A[1]);
+
+            // Draw handle
+            drawLink(A, B, '#FF6B6B', 5);
+
+            // Draw middle link
+            drawLink(B, C, '#4ECDC4', 4);
+
+            // Draw clamp link
+            drawLink(C, D, '#45B7D1', 4);
+
+            // Draw clamp jaw
+            ctx.fillStyle = '#666';
+            ctx.fillRect(D[0] - 5, D[1], 10, 15);
+
+            // Draw joints
+            drawJoint(A[0], A[1], '#333', true);
+            drawJoint(B[0], B[1], '#FF6B6B');
+            drawJoint(C[0], C[1], '#4ECDC4');
+            drawJoint(D[0], D[1], '#45B7D1');
+
+            // Add labels
+            drawLabel("Handle", B[0], B[1], 15, 15);
+            drawLabel("Clamp", D[0], D[1], 15, -15);
+        }
+
+        function drawLink(start, end, color, width) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(start[0], start[1]);
+            ctx.lineTo(end[0], end[1]);
+            ctx.stroke();
+
+            // Add professional link styling with rounded ends
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(start[0], start[1], width/2, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(end[0], end[1], width/2, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        function drawGroundLink(A, B) {
+            // Draw ground link
+            ctx.strokeStyle = '#8B4513';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(A[0], A[1]);
+            ctx.lineTo(B[0], B[1]);
+            ctx.stroke();
+
+            // Draw ground symbols
+            drawGroundSymbol(A[0], A[1]);
+            drawGroundSymbol(B[0], B[1]);
+        }
+
+        function drawSliderTrack(offset, vertical = false) {
+            ctx.strokeStyle = '#8B4513';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            
+            if (vertical) {
+                ctx.moveTo(-200, offset);
+                ctx.lineTo(200, offset);
+                // Draw track guide lines
+                ctx.moveTo(-200, offset + 10);
+                ctx.lineTo(200, offset + 10);
+                ctx.moveTo(-200, offset - 10);
+                ctx.lineTo(200, offset - 10);
+            } else {
+                ctx.moveTo(-200, offset);
+                ctx.lineTo(200, offset);
+            }
+            ctx.stroke();
+
+            // Draw ground symbols at ends
+            drawGroundSymbol(-180, offset);
+            drawGroundSymbol(180, offset);
+        }
+
+        function drawGroundSymbol(x, y) {
+            const size = 20;
+            
+            // Draw the main ground symbol - a circle with cross
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 3;
+            ctx.fillStyle = '#333';
+            
+            // Outer circle
+            ctx.beginPath();
+            ctx.arc(x, y, size/2, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Inner cross lines
+            ctx.beginPath();
+            ctx.moveTo(x - size/3, y);
+            ctx.lineTo(x + size/3, y);
+            ctx.moveTo(x, y - size/3);
+            ctx.lineTo(x, y + size/3);
+            ctx.stroke();
+            
+            // Four small triangular supports around the circle
+            const triangleSize = 8;
+            const positions = [
+                [x, y - size/2 - 5], // top
+                [x + size/2 + 5, y], // right
+                [x, y + size/2 + 5], // bottom
+                [x - size/2 - 5, y]  // left
+            ];
+            
+            positions.forEach(([px, py], index) => {
+                ctx.beginPath();
+                if (index === 0 || index === 2) { // top/bottom
+                    const direction = index === 0 ? 1 : -1;
+                    ctx.moveTo(px, py);
+                    ctx.lineTo(px - triangleSize/2, py + direction * triangleSize);
+                    ctx.lineTo(px + triangleSize/2, py + direction * triangleSize);
+                    ctx.closePath();
+                } else { // left/right
+                    const direction = index === 1 ? -1 : 1;
+                    ctx.moveTo(px, py);
+                    ctx.lineTo(px + direction * triangleSize, py - triangleSize/2);
+                    ctx.lineTo(px + direction * triangleSize, py + triangleSize/2);
+                    ctx.closePath();
+                }
+                ctx.fill();
+            });
+        }
+
+        function drawJoint(x, y, color, isFixed = false) {
+            if (isFixed) {
+                // Use the new ground symbol for fixed joints
+                drawGroundSymbol(x, y);
+            } else {
+                // Regular joint - enhanced with gradient and border
+                const radius = 8;
+                
+                // Outer ring
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Inner fill with gradient effect
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(x, y, radius - 1, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Center highlight
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.beginPath();
+                ctx.arc(x - 2, y - 2, 2, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        function drawCouplerCurve(A, B, L1, L2, L3, L4) {
+            ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            let firstPoint = true;
+            for (let theta = 0; theta < 2 * Math.PI; theta += 0.1) {
+                const C = [A[0] + L2 * Math.cos(theta), A[1] + L2 * Math.sin(theta)];
+                
+                // Calculate D position for this angle
+                const dx = B[0] - C[0];
+                const dy = B[1] - C[1];
+                const d = Math.sqrt(dx*dx + dy*dy);
+                
+                if (d <= L3 + L4 && d >= Math.abs(L3 - L4)) {
+                    const a = (L4*L4 - L3*L3 + d*d) / (2*d);
+                    const h = Math.sqrt(L4*L4 - a*a);
+                    const px = C[0] + a * dx / d;
+                    const py = C[1] + a * dy / d;
+                    const D = [px + h * (-dy) / d, py + h * dx / d];
+                    
+                    // Coupler point (midpoint of coupler link)
+                    const couplerX = (C[0] + D[0]) / 2;
+                    const couplerY = (C[1] + D[1]) / 2;
+                    
+                    if (firstPoint) {
+                        ctx.moveTo(couplerX, couplerY);
+                        firstPoint = false;
+                    } else {
+                        ctx.lineTo(couplerX, couplerY);
+                    }
+                }
+            }
+            ctx.stroke();
+        }
+
+        function drawLabel(text, x, y, offsetX = 0, offsetY = 0) {
+            ctx.save();
+            ctx.scale(1, -1);
+            ctx.fillStyle = '#333';
+            ctx.font = '12px Arial';
+            ctx.fillText(text, x + offsetX, -(y + offsetY));
+            ctx.restore();
+        }
+
+        function drawText(text, x, y) {
+            ctx.save();
+            ctx.scale(1, -1);
+            ctx.fillStyle = '#333';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(text, x, -y);
+            ctx.restore();
+        }
+
+        function startAnimation() {
+            if (isAnimating) return;
+            
+            isAnimating = true;
+            
+            function animate() {
+                if (!isAnimating) return;
+                
+                const speedControl = document.getElementById('speed-control');
+                const stepControl = document.getElementById('step-control');
+                
+                if (speedControl && stepControl) {
+                    const speed = parseFloat(speedControl.value);
+                    const step = parseFloat(stepControl.value);
+                    
+                    angle += (speed * step * Math.PI) / (180 * 60);
+                    if (angle > 2 * Math.PI) angle -= 2 * Math.PI;
+                    
+                    drawMechanism();
+                }
+                
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        function stopAnimation() {
+            isAnimating = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+
+        function runExperiment() {
+            if (!currentExperiment) {
+                alert('Please select an experiment first!');
+                return;
+            }
+
+            stopAnimation();
+            experimentData = [];
+            
+            const resultsSection = document.getElementById('results-section');
+            if (resultsSection) {
+                resultsSection.style.display = 'block';
+            }
+            
+            // Run experiment based on type
+            switch(currentExperiment) {
+                case 'motion-path':
+                    runMotionPathExperiment();
+                    break;
+                case 'velocity-analysis':
+                    runVelocityAnalysis();
+                    break;
+                case 'displacement':
+                    runDisplacementAnalysis();
+                    break;
+                case 'harmonic-motion':
+                    runHarmonicMotionAnalysis();
+                    break;
+                case 'force-amplification':
+                    runForceAmplificationAnalysis();
+                    break;
+                default:
+                    runGenericExperiment();
+            }
+
+            plotResults();
+        }
+
+        function toggleResults() {
+            const content = document.getElementById('results-content-wrapper');
+            const icon = document.getElementById('results-toggle');
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                icon.classList.remove('collapsed');
+                icon.textContent = '▼';
+            } else {
+                content.classList.add('collapsed');
+                icon.classList.add('collapsed');
+                icon.textContent = '▶';
+            }
+        }
+
+        function runMotionPathExperiment() {
+            const params = mechanisms.fourbar.parameters;
+            const L1 = params.link1.value;
+            const L2 = params.link2.value;
+            const L3 = params.link3.value;
+            const L4 = params.link4.value;
+
+            for (let theta = 0; theta <= 360; theta += 10) {
+                const radians = theta * Math.PI / 180;
+                const A = [-L1/2, 0];
+                const B = [L1/2, 0];
+                const C = [A[0] + L2 * Math.cos(radians), A[1] + L2 * Math.sin(radians)];
+                
+                // Calculate point D
+                const dx = B[0] - C[0];
+                const dy = B[1] - C[1];
+                const d = Math.sqrt(dx*dx + dy*dy);
+                
+                if (d <= L3 + L4 && d >= Math.abs(L3 - L4)) {
+                    const a = (L4*L4 - L3*L3 + d*d) / (2*d);
+                    const h = Math.sqrt(L4*L4 - a*a);
+                    const px = C[0] + a * dx / d;
+                    const py = C[1] + a * dy / d;
+                    const D = [px + h * (-dy) / d, py + h * dx / d];
+
+                    // Coupler point (midpoint)
+                    const couplerX = (C[0] + D[0]) / 2;
+                    const couplerY = (C[1] + D[1]) / 2;
+
+                    experimentData.push({
+                        angle: theta,
+                        x: couplerX.toFixed(2),
+                        y: couplerY.toFixed(2),
+                        distance: Math.sqrt(couplerX*couplerX + couplerY*couplerY).toFixed(2)
+                    });
+                }
+            }
+
+            updateResultsTable(['Angle (°)', 'X Position (mm)', 'Y Position (mm)', 'Distance (mm)']);
+        }
+
+        function runVelocityAnalysis() {
+            const params = mechanisms.fourbar.parameters;
+            const omega = 30;
+            
+            for (let theta = 0; theta <= 360; theta += 10) {
+                const radians = theta * Math.PI / 180;
+                const outputVelocity = omega * Math.sin(radians) * 0.8;
+                const transmissionAngle = Math.abs(Math.sin(radians * 2)) * 90;
+                
+                experimentData.push({
+                    angle: theta,
+                    input_velocity: omega,
+                    output_velocity: outputVelocity.toFixed(2),
+                    transmission_angle: transmissionAngle.toFixed(1)
+                });
+            }
+
+            updateResultsTable(['Angle (°)', 'Input Velocity (RPM)', 'Output Velocity (RPM)', 'Transmission Angle (°)']);
+        }
+
+        function runDisplacementAnalysis() {
+            const params = mechanisms.slidercrank.parameters;
+            const r = params.crank.value;
+            const l = params.rod.value;
+            const offset = params.offset.value;
+
+            for (let theta = 0; theta <= 360; theta += 10) {
+                const radians = theta * Math.PI / 180;
+                const displacement = r * Math.cos(radians) + Math.sqrt(l*l - (r * Math.sin(radians) - offset)*(r * Math.sin(radians) - offset));
+                const velocity = -r * Math.sin(radians);
+                
+                experimentData.push({
+                    angle: theta,
+                    displacement: displacement.toFixed(2),
+                    velocity: velocity.toFixed(2)
+                });
+            }
+
+            updateResultsTable(['Angle (°)', 'Displacement (mm)', 'Velocity (mm/rad)']);
+        }
+
+        function runHarmonicMotionAnalysis() {
+            const params = mechanisms.scottishyoke.parameters;
+            const r = params.radius.value;
+            
+            for (let theta = 0; theta <= 360; theta += 10) {
+                const radians = theta * Math.PI / 180;
+                const displacement = r * Math.sin(radians);
+                const velocity = r * Math.cos(radians);
+                
+                experimentData.push({
+                    angle: theta,
+                    displacement: displacement.toFixed(2),
+                    velocity: velocity.toFixed(2)
+                });
+            }
+
+            updateResultsTable(['Angle (°)', 'Displacement (mm)', 'Velocity (mm/rad)']);
+        }
+
+        function runForceAmplificationAnalysis() {
+            const inputForce = 100;
+            
+            for (let theta = 60; theta <= 120; theta += 5) {
+                const radians = theta * Math.PI / 180;
+                const toggleFactor = Math.abs(Math.sin(radians - Math.PI/2));
+                const mechanicalAdvantage = 1 / (toggleFactor + 0.01);
+                const outputForce = inputForce * mechanicalAdvantage;
+                
+                experimentData.push({
+                    angle: theta,
+                    input_force: inputForce,
+                    output_force: Math.min(outputForce, 10000).toFixed(0),
+                    mechanical_advantage: Math.min(mechanicalAdvantage, 100).toFixed(1)
+                });
+            }
+
+            updateResultsTable(['Angle (°)', 'Input Force (N)', 'Output Force (N)', 'Mech Advantage']);
+        }
+
+        function runGenericExperiment() {
+            for (let i = 0; i <= 10; i++) {
+                experimentData.push({
+                    step: i,
+                    value1: (Math.sin(i * 0.5) * 100).toFixed(2),
+                    value2: (Math.cos(i * 0.5) * 50).toFixed(2)
+                });
+            }
+
+            updateResultsTable(['Step', 'Value 1', 'Value 2']);
+        }
+
+        function updateResultsTable(headers) {
+            const resultsContent = document.getElementById('results-content');
+            if (resultsContent) {
+                const tableHtml = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+                        </thead>
+                        <tbody>
+                            ${experimentData.slice(0, 8).map(row => `
+                                <tr>${Object.values(row).map(val => `<td>${val}</td>`).join('')}</tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    ${experimentData.length > 8 ? `<p style="color: #666; font-size: 0.8em; margin-top: 8px;">Showing first 8 of ${experimentData.length} data points. Download full dataset for complete results.</p>` : ''}
+                `;
+                resultsContent.innerHTML = tableHtml;
+            }
+        }
+
+        function plotResults() {
+            const chartCanvas = document.getElementById('chart-canvas');
+            if (!chartCanvas || experimentData.length === 0) return;
+            
+            const chartCtx = chartCanvas.getContext('2d');
+            chartCtx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
+
+            const margin = 40;
+            const chartWidth = chartCanvas.width - 2 * margin;
+            const chartHeight = chartCanvas.height - 2 * margin;
+
+            const keys = Object.keys(experimentData[0]);
+            const xKey = keys[0];
+            const yKey = keys[1];
+            
+            const xData = experimentData.map(d => parseFloat(d[xKey]) || 0);
+            const yData = experimentData.map(d => parseFloat(d[yKey]) || 0);
+
+            const xMin = Math.min(...xData);
+            const xMax = Math.max(...xData);
+            const yMin = Math.min(...yData);
+            const yMax = Math.max(...yData);
+
+            // Draw axes
+            chartCtx.strokeStyle = '#ddd';
+            chartCtx.lineWidth = 1;
+            chartCtx.beginPath();
+            chartCtx.moveTo(margin, margin);
+            chartCtx.lineTo(margin, margin + chartHeight);
+            chartCtx.lineTo(margin + chartWidth, margin + chartHeight);
+            chartCtx.stroke();
+
+            // Plot data
+            chartCtx.strokeStyle = '#667eea';
+            chartCtx.lineWidth = 2;
+            chartCtx.beginPath();
+
+            experimentData.forEach((point, i) => {
+                const x = margin + (xData[i] - xMin) / (xMax - xMin) * chartWidth;
+                const y = margin + chartHeight - (yData[i] - yMin) / (yMax - yMin) * chartHeight;
+                
+                if (i === 0) {
+                    chartCtx.moveTo(x, y);
+                } else {
+                    chartCtx.lineTo(x, y);
+                }
+            });
+            chartCtx.stroke();
+
+            // Add data points
+            chartCtx.fillStyle = '#667eea';
+            experimentData.forEach((point, i) => {
+                const x = margin + (xData[i] - xMin) / (xMax - xMin) * chartWidth;
+                const y = margin + chartHeight - (yData[i] - yMin) / (yMax - yMin) * chartHeight;
+                chartCtx.beginPath();
+                chartCtx.arc(x, y, 3, 0, 2 * Math.PI);
+                chartCtx.fill();
+            });
+        }
+
+        function generateData() {
+            if (experimentData.length === 0) {
+                alert('Please run an experiment first!');
+                return;
+            }
+
+            const headers = Object.keys(experimentData[0]);
+            const csvContent = [
+                headers.join(','),
+                ...experimentData.map(row => headers.map(header => row[header]).join(','))
+            ].join('\n');
+
+            downloadFile(csvContent, `${currentMechanism}_${currentExperiment || 'data'}_${new Date().toISOString().slice(0,10)}.csv`, 'text/csv');
+        }
+
+        function downloadCAD() {
+            const mechanism = mechanisms[currentMechanism];
+            const params = mechanism.parameters;
+            
+            let pythonCode = generateCADCode(currentMechanism, params);
+            downloadFile(pythonCode, `${currentMechanism}_freecad_model.py`, 'text/plain');
+        }
+
+        function generateCADCode(mechanismType, params) {
+            return `# FreeCAD Python Script for ${mechanisms[mechanismType].name}
+# Generated by SiliconWit.COM 2D Mechanisms Analyzer
+
+import FreeCAD as App
+import Part
+
+# Create new document
+doc = App.newDocument("${mechanismType}_mechanism")
+
+# Parameters (in mm)
+${Object.entries(params).map(([key, param]) => `${key} = ${param.value}  # ${param.name}`).join('\n')}
+
+print("${mechanisms[mechanismType].name} model created successfully!")
+print("Parameters:", ${JSON.stringify(params)})
+
+doc.recompute()
+`;
+        }
+
+        function downloadData() {
+            if (experimentData.length === 0) {
+                alert('Please run an experiment first to generate data!');
+                return;
+            }
+            generateData();
+        }
+
+        function downloadReport() {
+            const mechanism = mechanisms[currentMechanism];
+            const reportContent = generateLabReport(mechanism);
+            downloadFile(reportContent, `${currentMechanism}_lab_report_template.md`, 'text/markdown');
+        }
+
+        function generateLabReport(mechanism) {
+            const date = new Date().toLocaleDateString();
+            return `# ${mechanism.name} Laboratory Report
+
+**Course:** Mechanical Engineering - Kinematics of Machinery  
+**Date:** ${date}  
+**Generated by:** SiliconWit.COM 2D Mechanisms Analyzer  
+
+## Objective
+To analyze the kinematic characteristics of the ${mechanism.name.toLowerCase()}.
+
+## Theory
+${mechanism.description}
+
+## Applications
+${mechanism.info.map(info => `- ${info}`).join('\n')}
+
+## Parameters
+${Object.entries(mechanism.parameters).map(([key, param]) => `- ${param.name}: ${param.value} mm`).join('\n')}
+
+## Results
+[Insert your experimental data and analysis here]
+
+## Conclusions
+[Add your conclusions based on the experimental results]
+`;
+        }
+
+        function downloadDesignData() {
+            const mechanism = mechanisms[currentMechanism];
+            const designContent = generateDesignData(mechanism);
+            downloadFile(designContent, `${currentMechanism}_design_data.txt`, 'text/plain');
+        }
+
+        function generateDesignData(mechanism) {
+            const params = mechanism.parameters;
+            const date = new Date().toLocaleDateString();
+            
+            return `${mechanism.name.toUpperCase()} - DESIGN DATA
+Generated: ${date}
+
+PARAMETERS:
+${Object.entries(params).map(([key, param]) => `${param.name}: ${param.value} mm`).join('\n')}
+
+DESCRIPTION:
+${mechanism.description}
+
+APPLICATIONS:
+${mechanism.info.join('\n')}
+`;
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type: type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
