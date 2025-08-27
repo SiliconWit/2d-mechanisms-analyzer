@@ -1,17 +1,402 @@
----
-import StarlightNav from '../../../components/StarlightNav.astro';
----
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>SiliconWit.COM 2D Mechanisms Analyzer</title>
-    <meta name="description" content="Planar Mechanics Experimentation Tool for Mechatronics Engineering Students">
-    <meta name="theme-color" content="#4361ee">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
+        /* Custom navigation that matches Starlight's professional look */
+        .custom-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--sl-color-bg-nav, #f8fafc);
+            border-bottom: 1px solid var(--sl-color-hairline-shade, #e2e8f0);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            width: 100%;
+            margin-bottom: 0;
+        }
+        
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 max(1rem, calc((100vw - 1400px) / 2));
+            height: 4rem;
+            gap: 1rem;
+        }
+        
+        .nav-left {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .site-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sl-color-text-accent, #1e40af);
+            font-weight: 600;
+            font-size: 1.125rem;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .site-title:hover {
+            color: var(--sl-color-text, #1e293b);
+        }
+        
+        .logo {
+            flex-shrink: 0;
+            border-radius: 0.25rem;
+        }
+        
+        .nav-center {
+            flex: 1;
+            max-width: 512px;
+            margin: 0 2rem;
+        }
+        
+        .search-placeholder {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            background: var(--sl-color-bg-sidebar, #f1f5f9);
+            border: 1px solid var(--sl-color-hairline-shade, #e2e8f0);
+            border-radius: 0.5rem;
+            color: var(--sl-color-gray-2, #64748b);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .search-placeholder:hover {
+            background: var(--sl-color-gray-6, #e2e8f0);
+            border-color: var(--sl-color-gray-3, #94a3b8);
+        }
+        
+        .search-icon {
+            flex-shrink: 0;
+            opacity: 0.6;
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-link {
+            color: var(--sl-color-gray-2, #64748b);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--sl-color-text, #1e293b);
+            background: var(--sl-color-gray-6, #f1f5f9);
+        }
+        
+        .social-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-left: 1rem;
+            border-left: 1px solid var(--sl-color-hairline-shade, #e2e8f0);
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            color: var(--sl-color-gray-2, #64748b);
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+        }
+        
+        .social-link:hover {
+            color: var(--sl-color-text, #1e293b);
+            background: var(--sl-color-gray-6, #f1f5f9);
+        }
+        
+        .theme-toggle {
+            margin-left: 0.5rem;
+        }
+        
+        .theme-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            background: none;
+            border: none;
+            color: var(--sl-color-gray-2, #64748b);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .theme-btn:hover {
+            color: var(--sl-color-text, #1e293b);
+            background: var(--sl-color-gray-6, #f1f5f9);
+        }
+
+        /* Mobile menu toggle button */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 44px;
+            height: 44px;
+            padding: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+            z-index: 1001;
+            position: absolute;
+            left: 1rem;
+        }
+        
+        .mobile-menu-toggle:hover {
+            background: var(--sl-color-gray-6, #f1f5f9);
+        }
+        
+        .hamburger-line {
+            width: 20px;
+            height: 2px;
+            background-color: var(--sl-color-text, #1e293b);
+            margin: 2px 0;
+            transition: all 0.3s ease;
+            border-radius: 1px;
+        }
+        
+        .mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+        
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .mobile-menu-overlay.active {
+            opacity: 1;
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 320px;
+            height: 100%;
+            background: var(--sl-color-bg-nav, #f8fafc);
+            border-left: 1px solid var(--sl-color-hairline-shade, #e2e8f0);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-menu.active {
+            right: 0;
+        }
+        
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--sl-color-hairline-shade, #e2e8f0);
+        }
+        
+        .mobile-site-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sl-color-text-accent, #1e40af);
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .mobile-logo {
+            flex-shrink: 0;
+        }
+        
+        .mobile-menu-close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            color: var(--sl-color-gray-2, #64748b);
+            cursor: pointer;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-menu-close:hover {
+            background: var(--sl-color-gray-6, #f1f5f9);
+            color: var(--sl-color-text, #1e293b);
+        }
+        
+        .mobile-nav-links {
+            padding: 1.5rem 0;
+        }
+        
+        .mobile-nav-link {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: var(--sl-color-gray-2, #64748b);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            border-bottom: 1px solid var(--sl-color-hairline-shade, #e2e8f0);
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-nav-link:hover {
+            background: var(--sl-color-gray-6, #f1f5f9);
+            color: var(--sl-color-text, #1e293b);
+            padding-left: 2rem;
+        }
+        
+        .mobile-menu-footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            border-top: 1px solid var(--sl-color-hairline-shade, #e2e8f0);
+        }
+        
+        .mobile-social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .mobile-social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            color: var(--sl-color-gray-2, #64748b);
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            background: var(--sl-color-gray-6, #f1f5f9);
+        }
+        
+        .mobile-social-link:hover {
+            color: var(--sl-color-text, #1e293b);
+            background: var(--sl-color-gray-5, #e2e8f0);
+            transform: translateY(-2px);
+        }
+        
+        .mobile-theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        
+        .mobile-theme-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--sl-color-gray-2, #64748b);
+        }
+        
+        .mobile-theme-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--sl-color-gray-6, #f1f5f9);
+            border: none;
+            color: var(--sl-color-gray-2, #64748b);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-theme-btn:hover {
+            color: var(--sl-color-text, #1e293b);
+            background: var(--sl-color-gray-5, #e2e8f0);
+        }
+
+        @media (max-width: 768px) {
+            .nav-center {
+                display: none;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            
+            .mobile-menu,
+            .mobile-menu-overlay {
+                display: block;
+            }
+            
+            .nav-container {
+                height: 3.5rem;
+                padding: 0 1rem;
+                gap: 0.75rem;
+                position: relative;
+            }
+            
+            .nav-left {
+                margin-left: 3rem;
+            }
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -19,7 +404,7 @@ import StarlightNav from '../../../components/StarlightNav.astro';
         }
 
         body {
-            font-family: 'PalatinoLinotype', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+            font-family: 'PalatinoLinotype', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif !important;
             line-height: 1.4;
             color: #333;
             background: #f5f5f5;
@@ -31,10 +416,10 @@ import StarlightNav from '../../../components/StarlightNav.astro';
             padding: 10px;
             display: grid;
             grid-template-rows: auto 1fr;
-            height: 100vh;
+            height: calc(100vh - 4rem);
         }
 
-        header {
+        .page-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 15px 20px;
@@ -43,13 +428,13 @@ import StarlightNav from '../../../components/StarlightNav.astro';
             text-align: center;
         }
 
-        h1 {
+        .page-header h1 {
             font-size: 1.8em;
             font-weight: 700;
             margin-bottom: 5px;
         }
 
-        .subtitle {
+        .page-header .subtitle {
             font-size: 0.9em;
             opacity: 0.9;
         }
@@ -457,13 +842,151 @@ import StarlightNav from '../../../components/StarlightNav.astro';
     </style>
 </head>
 <body>
-    <StarlightNav />
-    
+    <header class="custom-nav">
+        <div class="nav-container">
+            <!-- Mobile menu toggle button -->
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            
+            <!-- Left section: Logo and site title -->
+            <div class="nav-left">
+                <a href="/" class="site-title">
+                    <img src="/favicon.svg" alt="SiliconWit.COM" class="logo" width="24" height="24">
+                    <span>SiliconWit.COM</span>
+                </a>
+            </div>
+            
+            <!-- Center section: Search (simplified) -->
+            <div class="nav-center">
+                <div class="search-placeholder">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="search-icon">
+                        <path d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18L20.29 21.71A1 1 0 0 0 21.71 20.29ZM11 18A7 7 0 1 1 18 11A7 7 0 0 1 11 18Z"/>
+                    </svg>
+                    <span>Search</span>
+                </div>
+            </div>
+            
+            <!-- Right section: Navigation, social links, and theme toggle -->
+            <div class="nav-right">
+                <!-- Main navigation links -->
+                <nav class="nav-links" id="nav-links">
+                    <a href="/research/" class="nav-link">Research</a>
+                    <a href="/education/" class="nav-link">Education</a>
+                    <a href="/product-development/" class="nav-link">Product Development</a>
+                    <a href="/blog/" class="nav-link">Blog</a>
+                    <a href="/contributors/" class="nav-link">Contributors</a>
+                </nav>
+                
+                <!-- Social links -->
+                <div class="social-links">
+                    <a href="https://github.com/siliconwit" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                    
+                    <a href="https://discord.gg/Qv2qguMJwK" target="_blank" rel="noopener" class="social-link" title="Discord">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.211.375-.445.865-.608 1.249a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.249a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                        </svg>
+                    </a>
+                    
+                    <a href="https://www.youtube.com/@siliconwit" target="_blank" rel="noopener" class="social-link" title="YouTube">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                    </a>
+                    
+                    <a href="https://www.linkedin.com/company/siliconwit" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <!-- Simple theme toggle -->
+                <div class="theme-toggle">
+                    <button class="theme-btn" onclick="toggleTheme()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6c3.31 0 6 2.69 6 6s-2.69 6-6 6zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile menu overlay -->
+            <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+            
+            <!-- Mobile menu -->
+            <div class="mobile-menu" id="mobile-menu">
+                <div class="mobile-menu-header">
+                    <a href="/" class="mobile-site-title">
+                        <img src="/favicon.svg" alt="SiliconWit.COM" class="mobile-logo" width="20" height="20">
+                        <span>SiliconWit.COM</span>
+                    </a>
+                    <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close mobile menu">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <nav class="mobile-nav-links">
+                    <a href="/research/" class="mobile-nav-link">Research</a>
+                    <a href="/education/" class="mobile-nav-link">Education</a>
+                    <a href="/product-development/" class="mobile-nav-link">Product Development</a>
+                    <a href="/blog/" class="mobile-nav-link">Blog</a>
+                    <a href="/contributors/" class="mobile-nav-link">Contributors</a>
+                </nav>
+                
+                <div class="mobile-menu-footer">
+                    <div class="mobile-social-links">
+                        <a href="https://github.com/siliconwit" target="_blank" rel="noopener" class="mobile-social-link" title="GitHub">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                        
+                        <a href="https://discord.gg/Qv2qguMJwK" target="_blank" rel="noopener" class="mobile-social-link" title="Discord">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.211.375-.445.865-.608 1.249a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.249a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                            </svg>
+                        </a>
+                        
+                        <a href="https://www.youtube.com/@siliconwit" target="_blank" rel="noopener" class="mobile-social-link" title="YouTube">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                        </a>
+                        
+                        <a href="https://www.linkedin.com/company/siliconwit" target="_blank" rel="noopener" class="mobile-social-link" title="LinkedIn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    
+                    <div class="mobile-theme-toggle">
+                        <span class="mobile-theme-label">Theme:</span>
+                        <button class="mobile-theme-btn" onclick="toggleTheme()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6c3.31 0 6 2.69 6 6s-2.69 6-6 6zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
     <div class="container">
-        <header>
+        <div class="page-header">
             <h1>2D Mechanisms Analyzer</h1>
             <p class="subtitle">Planar Mechanics Experimentation Tool for Mechatronics Engineering Students</p>
-        </header>
+        </div>
 
         <div class="main-content">
             <div class="sidebar">
@@ -1569,7 +2092,7 @@ import StarlightNav from '../../../components/StarlightNav.astro';
 
         function generateCADCode(mechanismType, params) {
             return `# FreeCAD Python Script for ${mechanisms[mechanismType].name}
-# Generated by 2D Mechanisms Analyzer
+# Generated by SiliconWit.COM 2D Mechanisms Analyzer
 
 import FreeCAD as App
 import Part
@@ -1607,7 +2130,7 @@ doc.recompute()
 
 **Course:** Mechanical Engineering - Kinematics of Machinery  
 **Date:** ${date}  
-**Generated by:** 2D Mechanisms Analyzer  
+**Generated by:** SiliconWit.COM 2D Mechanisms Analyzer  
 
 ## Objective
 To analyze the kinematic characteristics of the ${mechanism.name.toLowerCase()}.
@@ -1667,6 +2190,79 @@ ${mechanism.info.join('\n')}
 
         // Initialize application when DOM is loaded
         document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+    <!-- StarlightNav JavaScript -->
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('starlight-theme', newTheme);
+        }
+
+        // Mobile menu functionality
+        function initMobileMenu() {
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+            
+            function openMobileMenu() {
+                mobileMenuToggle?.classList.add('active');
+                mobileMenu?.classList.add('active');
+                mobileMenuOverlay?.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            function closeMobileMenu() {
+                mobileMenuToggle?.classList.remove('active');
+                mobileMenu?.classList.remove('active');
+                mobileMenuOverlay?.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            // Toggle menu
+            mobileMenuToggle?.addEventListener('click', () => {
+                if (mobileMenu?.classList.contains('active')) {
+                    closeMobileMenu();
+                } else {
+                    openMobileMenu();
+                }
+            });
+            
+            // Close menu
+            mobileMenuClose?.addEventListener('click', closeMobileMenu);
+            mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
+            
+            // Close menu when clicking on nav links
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+            
+            // Close menu on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && mobileMenu?.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768 && mobileMenu?.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            });
+        }
+
+        // Initialize mobile menu when DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMobileMenu);
+        } else {
+            initMobileMenu();
+        }
     </script>
 </body>
 </html>
