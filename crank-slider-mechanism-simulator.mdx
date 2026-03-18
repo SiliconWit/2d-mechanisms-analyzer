@@ -12,10 +12,18 @@ import TawkWidget from '../../../../components/TawkWidget.astro';
 import UniversalContentContributors from '../../../../components/UniversalContentContributors.astro';
 import InArticleAd from '../../../../components/InArticleAd.astro';
 import Copyright from '../../../../components/Copyright.astro';
-import TwoDMechanismsAnalyzerComments from '../../../../components/2d-mechanisms-analyzer/TwoDMechanismsAnalyzerComments.astro';
-import { Card, CardGrid, Steps, LinkButton } from '@astrojs/starlight/components';
+import BionicText from '../../../../components/BionicText.astro';
+import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
 
-<UniversalContentContributors contributors={frontmatter.contributors} />
+<UniversalContentContributors 
+  contributors={frontmatter.contributors}
+/>
+
+
+
+import TwoDMechanismsAnalyzerComments from '../../../../components/2d-mechanisms-analyzer/TwoDMechanismsAnalyzerComments.astro';
 
 The crank-slider is the most widely used mechanism in engineering: internal combustion engines, reciprocating compressors, hydraulic presses, and packaging machinery all depend on it. This simulator provides complete kinematic and force analysis for any crank-slider configuration, with real-time animation and interactive charts. #CrankSlider #MechanismSimulator #KinematicAnalysis
 
@@ -41,9 +49,10 @@ The crank-slider is the most widely used mechanism in engineering: internal comb
   </Card>
 </CardGrid>
 
+## Key Features
+
 <InArticleAd />
 
-## Key Features
 
 <Steps>
 1. **Real-Time Animation**
@@ -64,6 +73,9 @@ The crank-slider is the most widely used mechanism in engineering: internal comb
 
 ## Preset Configurations
 
+<InArticleAd />
+
+
 The simulator includes three engineering presets that represent real-world applications:
 
 | Preset | Crank | Rod | Offset | Speed | Slider Force |
@@ -74,9 +86,10 @@ The simulator includes three engineering presets that represent real-world appli
 
 Each preset configures all parameters to values representative of the application, letting you immediately see how different machines exploit the same mechanism differently.
 
+## Equations
+
 <InArticleAd />
 
-## Equations
 
 The simulator implements exact analytical solutions (not approximations):
 
@@ -104,6 +117,9 @@ Where r = crank length, l = connecting rod length, e = slider offset, theta = cr
 
 ## Guided Experiments
 
+<InArticleAd />
+
+
 Eight structured experiments are available in the [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course, each with Python analysis scripts and design questions:
 
 1. [Baseline Kinematic Profile](/education/mechanism-design-simulation/crank-slider-experiments#experiment-1-baseline-kinematic-profile): verify equations, observe velocity/acceleration asymmetry
@@ -117,11 +133,18 @@ Eight structured experiments are available in the [Mechanism Design and Simulati
 
 ## Related Resources
 
+<InArticleAd />
+
+
 - **Try it now:** [Open the Crank-Slider Mechanism Simulator](/product-development/crank-slider-mechanism-simulator/)
 - **Guided experiments:** [Crank-Slider Mechanism Experiments](/education/mechanism-design-simulation/crank-slider-experiments) with Python data analysis
 - **Build a 3D model:** [Slider Crank Mechanism Design](/education/parametric-mechanical-cad-freecad/slider-crank-mechanism) in FreeCAD
 - **Theory background:** [Planar Mechanics](/education/planar-mechanics/) course
 
 <TwoDMechanismsAnalyzerComments />
-<Copyright />
+
+
+
+<InArticleAd />
 <TawkWidget />
+<Copyright />
