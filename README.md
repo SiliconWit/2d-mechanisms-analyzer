@@ -21,6 +21,7 @@ Product page for the SiliconWit 2D Mechanisms Analyzer, a suite of interactive b
 ```
 2d-mechanisms-analyzer/
 ├── index.mdx
+├── crank-slider-mechanism-simulator.mdx
 └── README.md
 ```
 

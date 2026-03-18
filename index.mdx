@@ -1,10 +1,10 @@
 ---
 title: "2D Mechanisms Analyzer"
-description: "Interactive browser-based simulators for planar mechanism design and analysis. Analyze crank-slider, four-bar linkage, Geneva, and other mechanisms with real-time animation, kinematic plots, force analysis, and downloadable engineering reports."
+description: "A suite of interactive browser-based simulators for planar mechanism design and analysis. Real-time animation, kinematic plots, force analysis, configuration comparison, and downloadable engineering resources."
 contributors: "sam-macharia"
 pubDate: 2026-03-10
-tags: ["mechanism-design", "kinematics", "simulation", "crank-slider", "mechanical-engineering", "interactive-tools", "engineering-analysis"]
-excerpt: "Design and analyze planar mechanisms directly in your browser. Real-time animation, 7 kinematic plots, A/B configuration comparison, force analysis, and downloadable professional reports, CSV data, and FreeCAD models."
+tags: ["mechanism-design", "kinematics", "simulation", "mechanical-engineering", "interactive-tools", "engineering-analysis", "planar-mechanisms"]
+excerpt: "Design and analyze planar mechanisms directly in your browser. Real-time animation, kinematic and force analysis plots, A/B configuration comparison, and downloadable professional reports, CSV data, and CAD models."
 heroImage: "https://cdn.siliconwit.com/product-development/2d-mechanisms-analyzer/crank-slider-mechanism-simulator.png"
 ---
 
@@ -13,114 +13,72 @@ import UniversalContentContributors from '../../../../components/UniversalConten
 import InArticleAd from '../../../../components/InArticleAd.astro';
 import Copyright from '../../../../components/Copyright.astro';
 import TwoDMechanismsAnalyzerComments from '../../../../components/2d-mechanisms-analyzer/TwoDMechanismsAnalyzerComments.astro';
-import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/components';
+import { Card, CardGrid, Steps, LinkButton } from '@astrojs/starlight/components';
 
 <UniversalContentContributors contributors={frontmatter.contributors} />
 
-Mechanism analysis in a textbook gives you one answer for one configuration. Change any parameter, and you start the calculation over. The 2D Mechanisms Analyzer gives you the full picture: adjust geometry in real time, see all seven kinematic curves update instantly, compare configurations side by side, and export professional-grade data for further analysis.
+Mechanism analysis in a textbook gives you one answer for one configuration. Change any parameter, and you start the calculation over. The 2D Mechanisms Analyzer is a suite of interactive browser-based simulators that gives you the full picture: adjust geometry in real time, see kinematic and force analysis curves update instantly, compare configurations side by side, and export professional-grade data for further analysis. No installation required. #MechanismDesign #EngineeringSimulation #PlanarMechanisms
 
-## Crank-Slider Mechanism Simulator
-
-The crank-slider is the most widely used mechanism in engineering: internal combustion engines, reciprocating compressors, hydraulic presses, and packaging machinery all depend on it. Our simulator provides complete kinematic and force analysis for any configuration.
-
-<LinkButton href="/product-development/crank-slider-mechanism-simulator/" variant="primary">Open Crank-Slider Simulator</LinkButton>
-
-### What You Can Analyze
+## What Every Simulator Provides
 
 <CardGrid>
-  <Card title="Displacement, Velocity, Acceleration" icon="graph">
-    Full kinematic profiles across 360 degrees of crank rotation. Switch between angle-domain and time-domain views. See how offset creates asymmetric quick-return motion.
+  <Card title="Real-Time Animation" icon="star">
+    Watch mechanisms move at the speed you set. Pause at any position to inspect geometry. Show or hide reference markers and dimensional labels.
   </Card>
 
-  <Card title="Force and Torque Analysis" icon="setting">
-    Apply a constant slider force and observe how crank torque varies through the cycle. Critical for motor sizing, flywheel design, and understanding why reciprocating machines vibrate.
+  <Card title="Kinematic and Force Analysis" icon="graph">
+    Full displacement, velocity, acceleration, and force profiles computed analytically (not approximations). Interactive charts with hover data readout.
   </Card>
 
-  <Card title="Connecting Rod and Transmission Angles" icon="magnifier">
-    Monitor the angles that determine mechanism viability. When the transmission angle drops below 40 degrees, the mechanism becomes inefficient. Watch it happen as you push parameter limits.
+  <Card title="A/B Configuration Comparison" icon="magnifier">
+    Save one configuration, change parameters, and overlay both datasets on every chart. See exactly how each parameter affects every output.
   </Card>
 
-  <Card title="Mechanical Advantage" icon="rocket">
-    See how force multiplication varies continuously through the rotation cycle. At dead centers, mechanical advantage spikes toward infinity: this is the principle behind toggle presses and coining machines.
+  <Card title="Professional Downloads" icon="document">
+    Export CSV data, PNG charts, design specifications with manufacturing tolerances, lab report templates, and parametric CAD scripts.
+  </Card>
+</CardGrid>
+
+## Available Simulators
+
+<CardGrid>
+  <Card title="Crank-Slider Mechanism" icon="rocket">
+    The most widely used mechanism in engineering: IC engines, compressors, presses, and packaging machines. Seven analysis plots, three engineering presets, offset support for quick-return analysis, and crank torque computation.
+
+    [Read more](./crank-slider-mechanism-simulator) or [open the simulator](/product-development/crank-slider-mechanism-simulator/).
   </Card>
 </CardGrid>
 
 <InArticleAd />
 
-### Key Features
+## Who Is This For?
 
-<Steps>
-1. **Real-Time Animation**
-   Watch the mechanism move at the RPM you set. Pause at any angle to inspect geometry. Show or hide the crank path, TDC/BDC markers, and dimensional labels.
-
-2. **Seven Analysis Plots**
-   Displacement, velocity, acceleration, mechanical advantage, connecting rod angle, transmission angle, and crank torque. All rendered on interactive charts with hover data readout.
-
-3. **A/B Configuration Comparison**
-   Save one configuration as Experiment A, change parameters, and run Experiment B. Both datasets overlay on every chart with distinct colors, making parametric studies visual and immediate.
-
-4. **Negative and Positive Offset**
-   Slider offset from -50 mm to +50 mm. Offset is what creates quick-return behavior in shapers and presses. Most textbooks only cover the inline case; this simulator shows the full picture.
-
-5. **Professional Downloads**
-   Export CSV data (361 data points across all 7 variables), PNG charts with watermark, design specifications with manufacturing tolerances, lab report templates, and parametric FreeCAD Python scripts.
-</Steps>
-
-### Preset Configurations
-
-The simulator includes three engineering presets that represent real-world applications:
-
-| Preset | Crank | Rod | Offset | Speed | Slider Force |
-|--------|-------|-----|--------|-------|--------------|
-| IC Engine | 40 mm | 160 mm | 0 mm | 60 RPM | 500 N |
-| Air Compressor | 30 mm | 120 mm | 0 mm | 90 RPM | 200 N |
-| Hydraulic Press | 60 mm | 180 mm | 10 mm | 30 RPM | 800 N |
-
-Each preset configures all parameters to values representative of the application, letting you immediately see how different machines exploit the same mechanism differently.
-
-### Equations
-
-The simulator implements exact analytical solutions (not approximations):
-
-**Position:**
-
-```text
-x = r * cos(theta) + sqrt(l^2 - (r * sin(theta) - e)^2)
-```
-
-**Velocity:**
-
-```text
-v = -r * omega * [sin(theta) + cos(theta) * (r * sin(theta) - e) / sqrt(l^2 - (r * sin(theta) - e)^2)]
-```
-
-**Acceleration:**
-
-```text
-Let S = r * sin(theta) - e,  Q = sqrt(l^2 - S^2)
-
-a = omega^2 * [-r * cos(theta) + r * sin(theta) * S / Q - r^2 * cos^2(theta) * l^2 / Q^3]
-```
-
-Where r = crank length, l = connecting rod length, e = slider offset, theta = crank angle, and omega = angular velocity in rad/s.
-
-<InArticleAd />
-
-### Who Is This For?
-
-- **Mechanical engineering students**: Develop intuition for how parameters affect kinematic behavior. Run the experiments in our [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course.
+- **Mechanical engineering students**: Develop intuition for how parameters affect kinematic behavior. Run structured experiments in our [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course.
 - **Practicing engineers**: Quick parametric studies before committing to CAD. Export data directly into your analysis workflow.
 - **Educators**: Ready-made demonstrations for lectures. The A/B comparison feature is built for classroom "what-if" moments.
-- **Competitive exam candidates**: Verify textbook problems. Build confidence in the formulas you're memorizing for PE, GATE, and FE exams.
+- **Competitive exam candidates**: Verify textbook problems and build confidence in the formulas for PE, GATE, and FE exams.
 
 ## Coming Soon
 
 Future simulators planned for this suite:
 
-- **Four-Bar Linkage Analyzer**: Grashof condition checking, coupler curve tracing, transmission angle analysis
-- **Geneva Mechanism Simulator**: Indexing motion, dwell periods, pin engagement angles
-- **Cam-Follower Analyzer**: Rise/dwell/return profiles, pressure angle, jerk analysis
-- **Scotch Yoke Simulator**: Pure sinusoidal motion comparison with crank-slider
+<CardGrid>
+  <Card title="Four-Bar Linkage" icon="setting">
+    Grashof condition checking, coupler curve tracing, transmission angle analysis, and motion classification.
+  </Card>
+
+  <Card title="Geneva Mechanism" icon="setting">
+    Indexing motion profiles, dwell periods, pin engagement angles, and angular velocity of the driven wheel.
+  </Card>
+
+  <Card title="Cam-Follower" icon="setting">
+    Rise/dwell/return profile design, pressure angle analysis, jerk profiles, and follower displacement curves.
+  </Card>
+
+  <Card title="Scotch Yoke" icon="setting">
+    Pure sinusoidal motion generation, comparison with crank-slider, and harmonic analysis.
+  </Card>
+</CardGrid>
 
 <TwoDMechanismsAnalyzerComments />
 <Copyright />
