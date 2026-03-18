@@ -1,0 +1,119 @@
+---
+title: "Four-Bar Linkage Simulator"
+description: "Interactive four-bar linkage simulator with Grashof condition analysis, angular position and velocity profiles, transmission angle, mechanical advantage, coupler curve tracing, and downloadable engineering reports."
+contributors: "sam-macharia"
+pubDate: 2026-03-19
+tags: ["four-bar-linkage", "mechanism-design", "kinematics", "simulation", "grashof", "mechanical-engineering", "interactive-tools"]
+excerpt: "Complete kinematic analysis of four-bar linkage mechanisms. Grashof condition checking, seven analysis plots, coupler curve tracing, A/B comparison, and downloadable design specs, CSV data, lab reports, and CAD models."
+heroImage: "https://cdn.siliconwit.com/product-development/2d-mechanisms-analyzer/four-bar-linkage-simulator.png"
+---
+
+import TawkWidget from '../../../../components/TawkWidget.astro';
+import UniversalContentContributors from '../../../../components/UniversalContentContributors.astro';
+import InArticleAd from '../../../../components/InArticleAd.astro';
+import Copyright from '../../../../components/Copyright.astro';
+import BionicText from '../../../../components/BionicText.astro';
+import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
+
+<UniversalContentContributors
+  contributors={frontmatter.contributors}
+/>
+
+
+
+import TwoDMechanismsAnalyzerComments from '../../../../components/2d-mechanisms-analyzer/TwoDMechanismsAnalyzerComments.astro';
+
+The four-bar linkage is the simplest closed-loop mechanism and the building block for most complex machine motion: windshield wipers, excavator booms, aircraft landing gear, and robotic arms all reduce to four-bar chains. This simulator provides complete kinematic analysis with Grashof condition checking, coupler curve tracing, and angular velocity profiles. #FourBarLinkage #MechanismSimulator #KinematicAnalysis
+
+<LinkButton href="/product-development/four-bar-linkage-simulator/" variant="primary">Open Simulator</LinkButton>
+
+## What You Can Analyze
+
+<CardGrid>
+  <Card title="Angular Positions" icon="graph">
+    Coupler and follower angle profiles across 360 degrees of input crank rotation. See how link proportions control the output motion pattern.
+  </Card>
+
+  <Card title="Angular Velocities" icon="setting">
+    Coupler and follower angular velocity profiles. Understand velocity ratios and how they vary through the cycle, critical for timing and speed control.
+  </Card>
+
+  <Card title="Transmission Angle" icon="magnifier">
+    Monitor the angle that determines force transmission quality. When it drops below 40 degrees, the mechanism jams under load. The simulator shows exactly where this happens.
+  </Card>
+
+  <Card title="Grashof Condition" icon="rocket">
+    Automatic classification: crank-rocker, double-crank, double-rocker, or change-point. Instantly see whether the input link can make a full rotation.
+  </Card>
+</CardGrid>
+
+<InArticleAd />
+
+## Key Features
+
+<Steps>
+1. **Real-Time Animation with Coupler Curve**
+   Watch the mechanism move. The coupler midpoint traces a curve that reveals the mechanism's motion character. Toggle path visibility on and off.
+
+2. **Seven Analysis Plots**
+   Coupler angle, follower angle, coupler angular velocity, follower angular velocity, transmission angle, mechanical advantage, and joint B velocity.
+
+3. **Four Engineering Presets**
+   Crank-rocker, double-crank (drag link), double-rocker, and parallelogram configurations, each representing a different Grashof classification.
+
+4. **Open and Crossed Circuits**
+   Switch between the two possible assembly configurations to see how the same link lengths produce different motion.
+
+5. **Professional Downloads**
+   Export CSV data (361 points across 14 variables), PNG charts, design specifications, lab report templates, and FreeCAD Python scripts.
+</Steps>
+
+## Preset Configurations
+
+| Preset | Crank (a) | Coupler (b) | Follower (c) | Ground (d) | Speed |
+|--------|-----------|-------------|--------------|------------|-------|
+| Crank-Rocker | 40 mm | 120 mm | 80 mm | 100 mm | 60 RPM |
+| Double-Crank | 20 mm | 80 mm | 60 mm | 50 mm | 30 RPM |
+| Double-Rocker | 80 mm | 100 mm | 60 mm | 120 mm | 45 RPM |
+| Parallelogram | 60 mm | 100 mm | 60 mm | 100 mm | 60 RPM |
+
+## Equations
+
+**Position analysis** uses the Freudenstein equation and half-angle substitution:
+
+```text
+K1*cos(theta4) - K2*cos(theta2) + K3 = cos(theta2 - theta4)
+
+K1 = d/a,  K2 = d/c,  K3 = (a^2 - b^2 + c^2 + d^2) / (2*a*c)
+```
+
+**Velocity analysis** from the velocity loop:
+
+```text
+omega3 = a*omega2*sin(theta4 - theta2) / (b*sin(theta3 - theta4))
+omega4 = a*omega2*sin(theta2 - theta3) / (c*sin(theta4 - theta3))
+```
+
+Where a = input crank, b = coupler, c = follower, d = ground, and omega2 = input angular velocity.
+
+<InArticleAd />
+
+## Guided Experiments
+
+Structured experiments are available in the [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course:
+
+1. [Four-Bar Linkage Experiments](/education/mechanism-design-simulation/four-bar-linkage-experiments): Grashof condition, transmission angle limits, coupler curves, and parametric studies with Python analysis
+
+## Related Resources
+
+- **Try it now:** [Open the Four-Bar Linkage Simulator](/product-development/four-bar-linkage-simulator/)
+- **Crank-slider comparison:** [Crank-Slider Mechanism Simulator](/product-development/2d-mechanisms-analyzer/crank-slider-mechanism-simulator)
+- **Theory background:** [Planar Mechanics](/education/planar-mechanics/) course
+
+<TwoDMechanismsAnalyzerComments />
+
+<InArticleAd />
+<TawkWidget />
+<Copyright />
