@@ -17,7 +17,7 @@ import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
 
-<UniversalContentContributors
+<UniversalContentContributors 
   contributors={frontmatter.contributors}
 />
 
@@ -49,9 +49,10 @@ The four-bar linkage is the simplest closed-loop mechanism and the building bloc
   </Card>
 </CardGrid>
 
+## Key Features
+
 <InArticleAd />
 
-## Key Features
 
 <Steps>
 1. **Real-Time Animation with Coupler Curve**
@@ -72,6 +73,9 @@ The four-bar linkage is the simplest closed-loop mechanism and the building bloc
 
 ## Preset Configurations
 
+<InArticleAd />
+
+
 | Preset | Crank (a) | Coupler (b) | Follower (c) | Ground (d) | Speed |
 |--------|-----------|-------------|--------------|------------|-------|
 | Crank-Rocker | 40 mm | 120 mm | 80 mm | 100 mm | 60 RPM |
@@ -80,6 +84,9 @@ The four-bar linkage is the simplest closed-loop mechanism and the building bloc
 | Parallelogram | 60 mm | 100 mm | 60 mm | 100 mm | 60 RPM |
 
 ## Equations
+
+<InArticleAd />
+
 
 **Position analysis** uses the Freudenstein equation and half-angle substitution:
 
@@ -98,21 +105,32 @@ omega4 = a*omega2*sin(theta2 - theta3) / (c*sin(theta4 - theta3))
 
 Where a = input crank, b = coupler, c = follower, d = ground, and omega2 = input angular velocity.
 
-<InArticleAd />
-
 ## Guided Experiments
 
-Structured experiments are available in the [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course:
+<InArticleAd />
 
-1. [Four-Bar Linkage Experiments](/education/mechanism-design-simulation/four-bar-linkage-experiments): Grashof condition, transmission angle limits, coupler curves, and parametric studies with Python analysis
+
+Six structured experiments are available in the [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course, each with Python analysis scripts and design questions:
+
+1. [Grashof Condition](/education/mechanism-design-simulation/four-bar-linkage-experiments#experiment-1-the-grashof-condition): verify the fundamental classification that determines whether a link can fully rotate
+2. [Transmission Angle](/education/mechanism-design-simulation/four-bar-linkage-experiments#experiment-2-transmission-angle-and-mechanism-quality): map the angle that controls force transmission quality
+3. [Comparing Presets](/education/mechanism-design-simulation/four-bar-linkage-experiments#experiment-3-comparing-the-four-presets): crank-rocker vs double-crank vs double-rocker vs parallelogram
+4. [Open vs Crossed](/education/mechanism-design-simulation/four-bar-linkage-experiments#experiment-4-open-vs-crossed-circuit): two assembly configurations, same link lengths, different motion
+5. [Coupler Curves](/education/mechanism-design-simulation/four-bar-linkage-experiments#experiment-5-coupler-curve-exploration): trace the paths that generate complex output motion
+6. [Parametric Sensitivity](/education/mechanism-design-simulation/four-bar-linkage-experiments#experiment-6-parametric-sensitivity): which link length matters most for manufacturing tolerances
 
 ## Related Resources
+
+<InArticleAd />
+
 
 - **Try it now:** [Open the Four-Bar Linkage Simulator](/product-development/four-bar-linkage-simulator/)
 - **Crank-slider comparison:** [Crank-Slider Mechanism Simulator](/product-development/2d-mechanisms-analyzer/crank-slider-mechanism-simulator)
 - **Theory background:** [Planar Mechanics](/education/planar-mechanics/) course
 
 <TwoDMechanismsAnalyzerComments />
+
+
 
 <InArticleAd />
 <TawkWidget />
