@@ -56,19 +56,22 @@ The four-bar linkage is the simplest closed-loop mechanism and the building bloc
 
 <Steps>
 1. **Real-Time Animation with Coupler Curve**
-   Watch the mechanism move. The coupler midpoint traces a curve that reveals the mechanism's motion character. Toggle path visibility on and off.
+   Watch the mechanism move with angle arcs (theta and mu) visible on the diagram. The coupler midpoint traces its characteristic curve. Toggle paths, adjust rotation direction, and export as PNG or animation video.
 
-2. **Seven Analysis Plots**
-   Coupler angle, follower angle, coupler angular velocity, follower angular velocity, transmission angle, mechanical advantage, and joint B velocity.
+2. **Eight Analysis Plots**
+   Coupler angle, follower angle, coupler angular velocity, follower angular velocity, transmission angle, mechanical advantage, joint B velocity, and coupler curve (X-Y path). All with A/B comparison overlay.
 
-3. **Four Engineering Presets**
-   Crank-rocker, double-crank (drag link), double-rocker, and parallelogram configurations, each representing a different Grashof classification.
+3. **Five Engineering Presets**
+   Crank-rocker, double-crank, double-rocker, triple-rocker (non-Grashof), and parallelogram. Each demonstrates a different Grashof classification with pre-verified parameters.
 
-4. **Open and Crossed Circuits**
-   Switch between the two possible assembly configurations to see how the same link lengths produce different motion.
+4. **Ground Offset**
+   Shift the output pivot vertically from -50 to +50mm. This changes the effective ground length and can flip the Grashof classification, a feature not available in other online simulators.
 
-5. **Professional Downloads**
-   Export CSV data (361 points across 14 variables), PNG charts, design specifications, lab report templates, and FreeCAD Python scripts.
+5. **Open and Crossed Circuits**
+   Switch between the two possible assembly configurations to see how the same link lengths produce completely different motion.
+
+6. **Professional Downloads**
+   Export CSV data (361 points, 14 variables), PNG charts, animation video (.webm), design specifications with Freudenstein constants and kinematic analysis, lab reports, and FreeCAD Python scripts. Two separate CSVs when A/B comparison experiments are run.
 </Steps>
 
 ## Preset Configurations
@@ -76,12 +79,13 @@ The four-bar linkage is the simplest closed-loop mechanism and the building bloc
 <InArticleAd />
 
 
-| Preset | Crank (a) | Coupler (b) | Follower (c) | Ground (d) | Speed |
-|--------|-----------|-------------|--------------|------------|-------|
-| Crank-Rocker | 40 mm | 120 mm | 80 mm | 100 mm | 60 RPM |
-| Double-Crank | 20 mm | 80 mm | 60 mm | 50 mm | 30 RPM |
-| Double-Rocker | 80 mm | 100 mm | 60 mm | 120 mm | 45 RPM |
-| Parallelogram | 60 mm | 100 mm | 60 mm | 100 mm | 60 RPM |
+| Preset | Crank (a) | Coupler (b) | Follower (c) | Ground (d) | Speed | Grashof |
+|--------|-----------|-------------|--------------|------------|-------|---------|
+| Crank-Rocker | 40 mm | 120 mm | 80 mm | 100 mm | 60 RPM | Yes (a shortest) |
+| Double-Crank | 60 mm | 80 mm | 70 mm | 40 mm | 30 RPM | Yes (d shortest) |
+| Double-Rocker | 80 mm | 35 mm | 60 mm | 100 mm | 30 RPM | Yes (b shortest) |
+| Triple-Rocker | 70 mm | 90 mm | 60 mm | 110 mm | 45 RPM | No |
+| Parallelogram | 60 mm | 100 mm | 60 mm | 100 mm | 60 RPM | Yes (a=c, b=d) |
 
 ## Equations
 
