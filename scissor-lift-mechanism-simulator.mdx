@@ -1,0 +1,183 @@
+---
+title: "Scissor Lift Mechanism Simulator"
+description: "Interactive scissor lift mechanism simulator with height, velocity, acceleration, actuator force, mechanical advantage, joint pin forces, link stress, energy, power, and stability analysis. Supports symmetric and left-pinned configurations, three actuator types, multi-stage stacking, and UDL vs point load distribution."
+contributors: "sam-macharia"
+pubDate: 2026-03-22
+tags: ["scissor-lift", "mechanism-design", "kinematics", "simulation", "mechanical-engineering", "force-analysis", "interactive-tools"]
+excerpt: "Complete kinematic, force, energy, and stability analysis of scissor lift mechanisms. Twelve analysis plots, real-time animation, UDL and point load support, A/B comparison, eight real-world presets, and downloadable engineering resources."
+heroImage: "https://cdn.siliconwit.com/product-development/2d-mechanisms-analyzer/scissor-lift-mechanism-simulator.png"
+---
+
+import TawkWidget from '../../../../components/TawkWidget.astro';
+import UniversalContentContributors from '../../../../components/UniversalContentContributors.astro';
+import InArticleAd from '../../../../components/InArticleAd.astro';
+import Copyright from '../../../../components/Copyright.astro';
+import BionicText from '../../../../components/BionicText.astro';
+import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
+
+<UniversalContentContributors 
+  contributors={frontmatter.contributors}
+/>
+
+
+
+import TwoDMechanismsAnalyzerComments from '../../../../components/2d-mechanisms-analyzer/TwoDMechanismsAnalyzerComments.astro';
+
+Scissor lifts appear in car jacks, warehouse platforms, aerial work platforms, laboratory jacks, and loading dock levelers. Despite the simple appearance (two crossed arms and an actuator), the force analysis is far from trivial: actuator force approaches infinity near collapse, stability degrades with height, and the choice of actuator type and joint configuration changes everything. This simulator provides complete analysis across all these dimensions. #ScissorLift #MechanismSimulator #ForceAnalysis
+
+<LinkButton href="/product-development/scissor-lift-mechanism-simulator/" variant="primary">Open Simulator</LinkButton>
+
+## What You Can Analyze
+
+<CardGrid>
+  <Card title="Height, Velocity, Acceleration" icon="graph">
+    Full kinematic profiles across the operating angle range. Platform height follows h = nL sin(theta), but velocity and acceleration reveal non-obvious behavior: the platform decelerates as it rises even with constant actuator speed.
+  </Card>
+
+  <Card title="Force and Mechanical Advantage" icon="setting">
+    Actuator force varies as 1/tan(theta), creating a hyperbolic spike near collapse. Compare actual mechanical advantage (including link weight) against ideal MA. Critical for hydraulic cylinder and motor sizing.
+  </Card>
+
+  <Card title="Joint Pin Forces and Link Stress" icon="magnifier">
+    Center pin and base pin resultant forces across the full range. Per-side force breakdown for eccentric loads. Bending stress estimates for structural design of the scissor arms.
+  </Card>
+
+  <Card title="Energy, Power, and Stability" icon="rocket">
+    Potential energy accumulation, power requirements, and stability analysis with tipping angle and safety factor. Essential for hydraulic power unit selection and safe operating envelope design.
+  </Card>
+</CardGrid>
+
+## Key Features
+
+<InArticleAd />
+
+
+<Steps>
+1. **Real-Time Animation**
+   Watch the scissor lift rise and fall with properly rendered rounded-bar arms, pin-hole joints, base and top platforms, and load arrows. All elements scale proportionally across presets from tiny lab jacks to large aerial platforms.
+
+2. **Twelve Analysis Plots in Four Groups**
+   Kinematics (height, velocity, acceleration, actuator length, base spread), Force Analysis (actuator force, mechanical advantage with ideal MA overlay, joint pin forces, link stress), Energy (potential energy and cumulative work), and Stability (tipping angle and safety factor on dual axes).
+
+3. **A/B Configuration Comparison**
+   Save one configuration as Experiment A, change any parameter, and run Experiment B. Both datasets overlay on every chart with distinct colors and line styles.
+
+4. **UDL and Point Load Support**
+   Default is uniform distributed load (UDL), representing pallets, equipment, or people spread across the platform. Switch to point load with configurable offset to analyze eccentric loading, tipping risk, and per-side force imbalance.
+
+5. **Two Configurations, Three Actuator Types**
+   Symmetric (both pivots slide) or left-pinned (one pivot fixed). Horizontal-base hydraulic, horizontal-center lead screw, or diagonal cylinder. Six combinations, each with different force, stroke, and efficiency characteristics.
+
+6. **Eight Real-World Presets**
+   Warehouse Lift, Car Jack, Aerial Platform, Lab Jack, Loading Dock, Auto Hoist, Electric Table, and Work Table. Each configures link length, stages, load, mass, actuator type, and joint arrangement for a specific application.
+
+7. **Professional Downloads**
+   Export PNG charts, design specifications with manufacturing tolerances, lab report templates, and full kinematic/force datasets.
+</Steps>
+
+## Preset Configurations
+
+<InArticleAd />
+
+
+The simulator includes eight engineering presets representing real applications:
+
+| Preset | L (mm) | Stages | Load (N) | Config | Actuator |
+|--------|--------|--------|----------|--------|----------|
+| Warehouse Lift | 700 | 3 | 2000 | Symmetric | Horizontal Base |
+| Car Jack | 300 | 1 | 5000 | Left-Pinned | Horizontal Base |
+| Aerial Platform | 1200 | 3 | 3000 | Symmetric | Horizontal Base |
+| Lab Jack | 80 | 1 | 50 | Symmetric | Lead Screw |
+| Loading Dock | 400 | 1 | 8000 | Symmetric | Horizontal Base |
+| Auto Hoist | 500 | 2 | 10000 | Left-Pinned | Diagonal |
+| Electric Table | 350 | 1 | 1500 | Left-Pinned | Lead Screw |
+| Work Table | 450 | 1 | 3000 | Symmetric | Diagonal |
+
+Each preset configures all parameters to values representative of the application: actuator type, joint configuration, operating angle range, link mass, and actuator speed.
+
+## Equations
+
+<InArticleAd />
+
+
+The simulator implements exact analytical solutions for all configurations:
+
+**Height per stage:**
+
+```text
+h = n * L * sin(theta)
+```
+
+**Actuator force (symmetric, horizontal-base):**
+
+```text
+F = W_eff / (2 * tan(theta))
+
+where W_eff = P + (total link weight) / 2
+```
+
+**Actuator force (left-pinned, horizontal-base):**
+
+```text
+F = W_eff / tan(theta)
+```
+
+**Diagonal actuator length:**
+
+```text
+D = L * sqrt(0.09 * cos^2(theta) + 0.49 * sin^2(theta))
+```
+
+**Mechanical advantage (ideal, symmetric horizontal-base):**
+
+```text
+MA_ideal = 2 * tan(theta) / n
+```
+
+**Tipping angle (stability):**
+
+```text
+tipping = arctan(worst_margin / cog_height)
+
+where worst_margin = min(halfSpread + cogX, halfSpread - cogX)
+```
+
+Where L = link length, n = number of stages, P = platform load, theta = half-angle from horizontal.
+
+## Guided Experiments
+
+<InArticleAd />
+
+
+Nine structured experiments are available in the [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course, each with Python analysis scripts and design questions:
+
+1. [Baseline Height and Force Profile](/education/mechanism-design-simulation/scissor-lift-experiments#experiment-1-baseline-height-and-force-profile): verify h = nL sin(theta) and the 1/tan(theta) force curve
+2. [Comparing Actuator Types](/education/mechanism-design-simulation/scissor-lift-experiments#experiment-2-comparing-actuator-types): horizontal-base vs lead screw vs diagonal, force and power tradeoffs
+3. [Symmetric vs Left-Pinned](/education/mechanism-design-simulation/scissor-lift-experiments#experiment-3-symmetric-vs-left-pinned-configuration): why left-pinned doubles the actuator force
+4. [Multi-Stage Height Multiplication](/education/mechanism-design-simulation/scissor-lift-experiments#experiment-4-multi-stage-height-multiplication): height, force, and stability across 1 to 3 stages
+5. [Point Load vs UDL](/education/mechanism-design-simulation/scissor-lift-experiments#experiment-5-point-load-vs-uniform-distributed-load): when load distribution matters and when it does not
+6. [Eccentric Loading and Tipping](/education/mechanism-design-simulation/scissor-lift-experiments#experiment-6-eccentric-loading-and-tipping-safety): mapping the safe operating envelope
+7. [Energy and Power Requirements](/education/mechanism-design-simulation/scissor-lift-experiments#experiment-7-energy-and-power-requirements): hydraulic pump and motor sizing
+8. [Link Stress and Structural Limits](/education/mechanism-design-simulation/scissor-lift-experiments#experiment-8-link-stress-and-structural-limits): cross-section design for strength
+9. [Comparing Real-World Presets](/education/mechanism-design-simulation/scissor-lift-experiments#experiment-9-comparing-real-world-presets): eight applications, eight engineering tradeoffs
+
+## Related Resources
+
+<InArticleAd />
+
+
+- **Try it now:** [Open the Scissor Lift Mechanism Simulator](/product-development/scissor-lift-mechanism-simulator/)
+- **Guided experiments:** [Scissor Lift Mechanism Experiments](/education/mechanism-design-simulation/scissor-lift-experiments) with Python data analysis
+- **Build a 3D model:** [Scissor Lift Mechanism Design](/education/parametric-mechanical-cad-freecad/scissor-lift-mechanism) in FreeCAD
+- **Compare mechanisms:** [Crank-Slider Simulator](/product-development/2d-mechanisms-analyzer/crank-slider-mechanism-simulator) and [Four-Bar Linkage Simulator](/product-development/2d-mechanisms-analyzer/four-bar-linkage-simulator)
+- **Theory background:** [Planar Mechanics](/education/planar-mechanics/) course
+
+<TwoDMechanismsAnalyzerComments />
+
+
+
+<InArticleAd />
+<TawkWidget />
+<Copyright />
