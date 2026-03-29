@@ -14,7 +14,7 @@ sidebar:
 
 **Read this page at:** [https://siliconwit.com/product-development/2d-mechanisms-analyzer/](https://siliconwit.com/product-development/2d-mechanisms-analyzer/)
 
-Product page for the SiliconWit 2D Mechanisms Analyzer, a suite of interactive browser-based simulators for planar mechanism design and analysis. Features the Crank-Slider Mechanism Simulator and Four-Bar Linkage Simulator with kinematic analysis, force analysis, and professional report generation.
+Product page for the SiliconWit 2D Mechanisms Analyzer, a suite of interactive browser-based simulators for planar mechanism design and analysis. Features the Crank-Slider Mechanism Simulator, Four-Bar Linkage Simulator, and Scissor Lift Mechanism Simulator with kinematic analysis, force analysis, stability analysis, and professional report generation.
 
 ## File Structure
 
@@ -23,6 +23,7 @@ Product page for the SiliconWit 2D Mechanisms Analyzer, a suite of interactive b
 ├── index.mdx
 ├── crank-slider-mechanism-simulator.mdx
 ├── four-bar-linkage-simulator.mdx
+├── scissor-lift-mechanism-simulator.mdx
 └── README.md
 ```
 
