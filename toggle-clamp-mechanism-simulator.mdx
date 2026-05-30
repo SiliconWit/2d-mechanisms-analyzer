@@ -1,0 +1,151 @@
+---
+title: "Toggle Clamp Mechanism Simulator"
+description: "Interactive over-centre toggle clamp simulator with force amplification (rigid and friction models), transmission-angle analysis, top-dead-centre lock and lock-margin design, pin reactions, link bending and pin shear stress with an allowable-stress sizing check, five size-class presets, live A/B comparison, and downloadable engineering resources."
+contributors: "sam-macharia"
+pubDate: 2026-03-29
+tags: ["toggle-clamp", "mechanism-design", "kinematics", "simulation", "mechanical-engineering", "force-analysis", "interactive-tools"]
+excerpt: "Design and analyse an over-centre toggle clamp in your browser. Map force amplification through top-dead-centre, check the transmission angle, size pins and links against an allowable stress, compare two configurations side by side, and download data, design specs, and a lab report."
+heroImage: "https://cdn.siliconwit.com/product-development/2d-mechanisms-analyzer/toggle-clamp-mechanism-simulator.png"
+---
+
+import TawkWidget from '../../../../components/TawkWidget.astro';
+import UniversalContentContributors from '../../../../components/UniversalContentContributors.astro';
+import InArticleAd from '../../../../components/InArticleAd.astro';
+import Copyright from '../../../../components/Copyright.astro';
+import BionicText from '../../../../components/BionicText.astro';
+import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
+
+<UniversalContentContributors 
+  contributors={frontmatter.contributors}
+/>
+
+
+
+import TwoDMechanismsAnalyzerComments from '../../../../components/2d-mechanisms-analyzer/TwoDMechanismsAnalyzerComments.astro';
+
+A toggle clamp turns a light pull on a handle into a large, self-holding clamping force. The trick is geometry: as the handle approaches top-dead-centre (TDC) the links line up, the mechanical advantage spikes, and a small margin past TDC makes the clamp lock itself with no holding effort. This simulator lets you watch that over-centre action, read the force, transmission angle, pin loads, and stresses at every handle position, and size a real clamp against a material allowable. #ToggleClamp #MechanismSimulator #ForceAnalysis
+
+<LinkButton href="/product-development/toggle-clamp-mechanism-simulator/" variant="primary">Open Simulator</LinkButton>
+
+## What You Can Analyze
+
+<CardGrid>
+  <Card title="Force amplification" icon="graph">
+    Mechanical advantage through the full handle travel, with both a rigid (ideal) model that diverges at TDC and an engineering model that includes pin friction and efficiency. See the clamping force the pad delivers for your handle effort.
+  </Card>
+  <Card title="Over-centre lock" icon="setting">
+    Find top-dead-centre numerically, set the lock margin past TDC, and see why the clamp self-locks. The diagram marks TDC, the locked stop, and the current handle angle live.
+  </Card>
+  <Card title="Transmission angle" icon="magnifier">
+    Watch the transmission angle at the toggle joint and keep it above the practical 40-degree limit so the linkage transmits force efficiently rather than binding.
+  </Card>
+  <Card title="Strength and sizing" icon="rocket">
+    Pin reactions, link bending stress, and pin shear stress across the travel, with allowable-stress lines from a material yield and safety factor so you can size the pins and links to a Safe or Over-stressed verdict.
+  </Card>
+</CardGrid>
+
+## Key Features
+
+<InArticleAd />
+
+
+<Steps>
+1. **Over-centre kinematics** A real four-bar toggle: handle, main link, and clamp arm, assembled on the hold-down (mirror) circuit so the bar lifts open and presses down at lock.
+
+2. **Two force models** A rigid model from the velocity ratio (ideal, diverges at TDC) and an engineering model blending in pin friction and global efficiency for a usable design curve.
+
+3. **Six analysis charts** Mechanical advantage, clamping force, transmission angle, pin reactions, link and pin stress, and pad output position, all swept across the handle travel and marked with TDC, lock, and the current angle.
+
+4. **Allowable-stress sizing** Enter a material yield strength and safety factor; the stress chart draws the bending and shear allowables and the panel reports a Safe or Over-stressed verdict.
+
+5. **Five size-class presets** From a mini benchtop clamp to a heavy industrial fixture, each a feasible, distinct configuration.
+
+6. **Live A/B comparison** Save Experiment A, change parameters, and overlay run B on every chart to compare two designs directly.
+
+7. **Downloadable resources** A design-data sheet, the full analysis dataset as CSV (both experiments when you compare two), and a complete lab report with watermark-free diagram, charts, and animation.
+</Steps>
+
+## Preset Configurations
+
+<InArticleAd />
+
+
+| Preset | Handle Lh (mm) | Base spacing d (mm) | Pad reach (mm) | Handle force (N) | Class |
+|--------|----------------|---------------------|----------------|------------------|-------|
+| Mini benchtop | 18 | 38 | 70 | 50 | Small bench tool |
+| Light-duty vertical | 28 | 58 | 95 | 80 | Light hold-down |
+| Medium-duty vertical | 40 | 70 | 110 | 120 | General fixture |
+| Heavy-duty vertical | 45 | 100 | 170 | 200 | Heavy hold-down |
+| Industrial | 65 | 140 | 240 | 250 | Large fixture |
+
+## Equations
+
+<InArticleAd />
+
+
+Rigid (ideal) mechanical advantage from the four-bar velocity ratio and the handle lever:
+
+```text
+MA_rigid = ((Lh + Lg) / Lpad) * |omega_handle / omega_arm|
+```
+
+Near top-dead-centre the toggle approximation shows why force diverges (alpha is the angle past collinear, phi = arctan(mu) the friction angle):
+
+```text
+MA_ideal    = 1 / (2 * tan(alpha))
+MA_friction = 1 / (2 * tan(alpha + phi))
+```
+
+Clamping force at the pad for a given handle force:
+
+```text
+F_pad = MA * F_handle
+```
+
+Pin shear stress (single shear at the toggle joint) and link bending stress:
+
+```text
+tau   = F_link / (pi * d^2 / 4)
+sigma = F_link / (t * w) + (F_link * e * c) / I,   I = w * t^3 / 12,  c = t / 2,  e = d / 2
+```
+
+Allowable stresses from the material yield strength Sy and safety factor N:
+
+```text
+sigma_allow = Sy / N
+tau_allow   = 0.5 * Sy / N
+```
+
+## Guided Experiments
+
+<InArticleAd />
+
+
+Work through the [Toggle Clamp Experiments lesson](/education/mechanism-design-simulation/toggle-clamp-experiments) for structured, Python-verified exercises:
+
+1. [Top-dead-centre and self-locking](/education/mechanism-design-simulation/toggle-clamp-experiments#experiment-1-top-dead-centre-and-self-locking)
+2. [Force amplification with friction](/education/mechanism-design-simulation/toggle-clamp-experiments#experiment-2-force-amplification-with-friction)
+3. [Transmission angle and geometry quality](/education/mechanism-design-simulation/toggle-clamp-experiments#experiment-3-transmission-angle-and-geometry-quality)
+4. [Pin and link stress sizing](/education/mechanism-design-simulation/toggle-clamp-experiments#experiment-4-pin-and-link-stress-sizing)
+5. [Lock-margin trade-offs](/education/mechanism-design-simulation/toggle-clamp-experiments#experiment-5-lock-margin-trade-offs)
+6. [Selecting a clamp for a target force](/education/mechanism-design-simulation/toggle-clamp-experiments#experiment-6-selecting-a-clamp-for-a-target-force)
+
+## Related Resources
+
+<InArticleAd />
+
+
+- [Toggle Clamp Experiments](/education/mechanism-design-simulation/toggle-clamp-experiments): the hands-on lesson that pairs with this simulator.
+- [Build a Toggle Clamp in FreeCAD](/education/parametric-mechanical-cad-freecad/toggle-clamp-mechanism): model the clamp parametrically.
+- [2D Mechanisms Analyzer](/product-development/2d-mechanisms-analyzer/): the full suite of planar mechanism simulators.
+- [Crank-Slider Mechanism Simulator](/product-development/crank-slider-mechanism-simulator/) and [Scissor Lift Mechanism Simulator](/product-development/scissor-lift-mechanism-simulator/): related mechanisms.
+
+<TwoDMechanismsAnalyzerComments />
+
+
+
+<InArticleAd />
+<TawkWidget />
+<Copyright />
