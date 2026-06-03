@@ -1,0 +1,156 @@
+---
+title: "Cam and Follower Mechanism Simulator"
+description: "Interactive disk-cam and translating-follower simulator: SVAJ diagrams (displacement, velocity, acceleration, jerk), the fundamental law of cam design, eight motion profiles compared by their Cv/Ca/Cj coefficients, pressure-angle and cam-sizing checks, radius of curvature and undercutting, roller/flat-face/knife-edge followers, follower dynamics and jump, live A/B comparison, and downloadable engineering resources."
+contributors: "sam-macharia"
+pubDate: 2026-04-05
+tags: ["cam-follower", "cam-design", "mechanism-design", "kinematics", "simulation", "mechanical-engineering", "svaj", "interactive-tools"]
+excerpt: "Design a disk cam from its motion profile in your browser. Plot the SVAJ diagrams, watch the fundamental law of cam design decide which profiles are usable, check the pressure angle and radius of curvature, push the follower until it jumps, compare two cams side by side, and download data, design specs, and a lab report."
+heroImage: "https://cdn.siliconwit.com/product-development/2d-mechanisms-analyzer/cam-follower-mechanism-simulator.png"
+---
+
+import TawkWidget from '../../../../components/TawkWidget.astro';
+import UniversalContentContributors from '../../../../components/UniversalContentContributors.astro';
+import InArticleAd from '../../../../components/InArticleAd.astro';
+import Copyright from '../../../../components/Copyright.astro';
+import BionicText from '../../../../components/BionicText.astro';
+import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
+
+<UniversalContentContributors 
+  contributors={frontmatter.contributors}
+/>
+
+
+
+import TwoDMechanismsAnalyzerComments from '../../../../components/2d-mechanisms-analyzer/TwoDMechanismsAnalyzerComments.astro';
+
+A cam turns steady rotation into any follower motion you can draw, but the displacement curve is the easy part. The quality of a cam lives in the higher derivatives: a motion that looks smooth on screen can hide a jump in acceleration that sends an infinite spike through the jerk and shakes the machine apart at speed. This simulator builds the cam from its motion profile, plots the full SVAJ chain (displacement, velocity, acceleration, jerk), and shows you the two things the profile then forces on you: the pressure angle and the radius of curvature. Pick a profile, watch the law decide whether it is usable, and size a real cam. #CamDesign #SVAJ #MechanismSimulator
+
+<LinkButton href="/product-development/cam-follower-mechanism-simulator/" variant="primary">Open Simulator</LinkButton>
+
+## What You Can Analyze
+
+<CardGrid>
+  <Card title="SVAJ and the fundamental law" icon="graph">
+    Displacement, velocity, acceleration, and jerk across one revolution. The law-violating profiles (constant velocity, constant acceleration, simple harmonic) reveal a step in velocity or acceleration right at a segment boundary; the smooth profiles do not.
+  </Card>
+  <Card title="Motion-profile comparison" icon="setting">
+    Eight profiles compared by their dimensionless peak coefficients Cv, Ca, Cj: cycloidal has the lowest jerk, modified trapezoid the lowest peak acceleration, and the polynomials sit in between. Choose per rise and per fall, then overlay two cams with A/B.
+  </Card>
+  <Card title="Pressure angle and cam sizing" icon="magnifier">
+    The pressure angle across the revolution against the 30-degree guideline. Shrink the base circle and watch it climb toward jamming; add follower offset to ease the rise.
+  </Card>
+  <Card title="Curvature and undercutting" icon="rocket">
+    Radius of curvature of the pitch curve with the undercut threshold and the 2-to-3x golden rule. Grow the roller until the cam becomes geometrically impossible, or switch to a flat face and watch the concave-profile limit.
+  </Card>
+  <Card title="Follower dynamics and jump" icon="random">
+    A single-degree-of-freedom spring-and-mass follower model. Raise the cam speed until the inertia force overcomes the spring and the contact force hits zero: the follower jumps off the cam.
+  </Card>
+  <Card title="Three follower types" icon="puzzle">
+    Roller, flat-face, and knife-edge followers, each with its own contact geometry and its own failure mode, plus an adjustable offset for the translating follower.
+  </Card>
+</CardGrid>
+
+## Key Features
+
+<InArticleAd />
+
+
+<Steps>
+1. **Analytic SVAJ chain** Every segment is evaluated from a closed-form motion profile, so the acceleration and jerk are exact rather than noisy numerical derivatives. That is what makes the fundamental law visible.
+
+2. **Eight motion profiles** Cycloidal, modified trapezoid, modified sine, 3-4-5 and 4-5-6-7 polynomials (all obey the law), plus simple harmonic, constant acceleration, and constant velocity (all violate it), grouped so the trade-off is obvious.
+
+3. **Seven analysis charts** Displacement, velocity, acceleration, jerk, pressure angle, radius of curvature, and cam contact force, all swept across the full revolution with segment-boundary markers and the current cam angle.
+
+4. **Geometry checks built in** The pressure-angle chart carries the design limit line; the curvature chart carries the undercut threshold and golden-rule line; the summaries report a pass or fail verdict for each.
+
+5. **Five application presets** An automotive valve cam, an automation index cam, a low-speed actuator, a high-speed precision cam, and a textbook double-dwell, each a realistic, feasible configuration.
+
+6. **Live A/B comparison** Save Experiment A, change the profile or geometry, and overlay run B on every chart to compare two cams directly.
+
+7. **Downloadable resources** A design-data sheet, the full SVAJ and geometry dataset as CSV, and a complete lab report with watermark-free diagram and charts.
+</Steps>
+
+## Preset Configurations
+
+<InArticleAd />
+
+
+| Preset | Base radius (mm) | Lift (mm) | Follower | Rise profile | Speed (rpm) |
+|--------|------------------|-----------|----------|--------------|-------------|
+| Automotive valve cam | 25 | 9 | Flat-face | 4-5-6-7 polynomial | 3000 |
+| Automation index cam | 35 | 25 | Roller | Modified trapezoid | 120 |
+| Low-speed actuator | 40 | 30 | Roller (offset) | Simple harmonic | 30 |
+| High-speed precision | 30 | 20 | Roller | Cycloidal | 1500 |
+| Textbook double-dwell | 25 | 20 | Roller | 3-4-5 polynomial | 180 |
+
+## Equations
+
+<InArticleAd />
+
+
+The SVAJ chain scales a normalized profile S(x), with x the fraction through a rise or fall of angular width beta (radians) and lift h:
+
+```text
+s = h * S(x)
+v = ds/dtheta   = (h / beta)   * S'(x)
+a = d2s/dtheta2 = (h / beta^2) * S''(x)
+j = d3s/dtheta3 = (h / beta^3) * S'''(x)
+```
+
+Peak values from the dimensionless coefficients (omega is the cam speed in rad/s):
+
+```text
+v_peak = Cv * h / beta
+a_peak = Ca * h * omega^2 / beta^2
+j_peak = Cj * h * omega^3 / beta^3
+```
+
+Pressure angle for a translating roller follower with offset eps and prime-circle radius Rp = rb + rr:
+
+```text
+alpha = atan( (v - eps) / ( s + sqrt(Rp^2 - eps^2) ) )
+```
+
+Radius of curvature of the pitch curve (R = Rp + s), and the undercut condition for a roller of radius rr:
+
+```text
+rho = (R^2 + v^2)^1.5 / (R^2 + 2 v^2 - R a)
+undercut when  rho_min <= rr        (golden rule: keep rho_min >= 2 to 3 times rr)
+```
+
+For a flat-face follower the cam contour radius is rb + s + a, and the profile must stay convex (rb + s + a > 0) everywhere.
+
+## Guided Experiments
+
+<InArticleAd />
+
+
+Work through the [Cam and Follower Experiments lesson](/education/mechanism-design-simulation/cam-follower-experiments) for structured, Python-verified exercises:
+
+1. [SVAJ and the fundamental law of cam design](/education/mechanism-design-simulation/cam-follower-experiments#experiment-1-svaj-and-the-fundamental-law-of-cam-design)
+2. [The motion-profile shoot-out](/education/mechanism-design-simulation/cam-follower-experiments#experiment-2-the-motion-profile-shoot-out)
+3. [Pressure angle and cam sizing](/education/mechanism-design-simulation/cam-follower-experiments#experiment-3-pressure-angle-and-cam-sizing)
+4. [Radius of curvature and undercutting](/education/mechanism-design-simulation/cam-follower-experiments#experiment-4-radius-of-curvature-and-undercutting)
+5. [Follower dynamics and jump](/education/mechanism-design-simulation/cam-follower-experiments#experiment-5-follower-dynamics-and-jump)
+6. [Design a cam to a specification](/education/mechanism-design-simulation/cam-follower-experiments#experiment-6-design-a-cam-to-a-specification)
+
+## Related Resources
+
+<InArticleAd />
+
+
+- [Cam and Follower Experiments](/education/mechanism-design-simulation/cam-follower-experiments): the hands-on lesson that pairs with this simulator.
+- [Build a Cam and Follower in FreeCAD](/education/parametric-mechanical-cad-freecad/cam-and-follower-mechanism): model the cam parametrically.
+- [2D Mechanisms Analyzer](/product-development/2d-mechanisms-analyzer/): the full suite of planar mechanism simulators.
+- [Toggle Clamp Mechanism Simulator](/product-development/toggle-clamp-mechanism-simulator/) and [Crank-Slider Mechanism Simulator](/product-development/crank-slider-mechanism-simulator/): related mechanisms.
+
+<TwoDMechanismsAnalyzerComments />
+
+
+
+<InArticleAd />
+<TawkWidget />
+<Copyright />
